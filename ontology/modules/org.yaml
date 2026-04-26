@@ -1,0 +1,397 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# MODULE: Organisation Ontology (ORG)
+# Namespace: #org
+# Purpose: Captures the organisational structure — who owns what, who is in
+#          which team, how teams roll up into platforms and divisions.
+#
+# HOW TO EDIT THIS FILE:
+#   - Add sub-classes by nesting under a parent with "subclasses:"
+#   - Add new object properties under "object_properties:"
+#   - Add new data properties under "data_properties:"
+#   - Use "notes:" anywhere to record open questions or rationale
+#   - "owl_axioms:" records OWL behaviour (transitive, functional, etc.)
+#   - Values under "enum:" are the allowed vocabulary for that property
+#   - "constraints:" records Neo4j rules to enforce at load time
+# ─────────────────────────────────────────────────────────────────────────────
+
+module:
+  id: ORG
+  name: Organisation Ontology
+  namespace: "http://acme.org/ontology#org"
+  version: "0.1-draft"
+  status: draft                    # draft | review | approved
+  notes: >
+    This module captures the 4-level organisational hierarchy of the enterprise:
+      Division → Platform → Lab → Team
+    Example: BCB → Client Servicing & Engagement → Payments & Transactions → Team A
+    It answers: who are the teams, how do they roll up, who owns what system.
+    Intentionally kept separate from SYS so org changes don't affect the
+    technical schema and vice versa.
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 1. CLASS HIERARCHY
+#
+# Every class implicitly inherits from ArchitecturalConcept (the root).
+# Indent "subclasses" to add depth. You can go as deep as needed.
+# Add a "notes" field to any class to record design rationale.
+# ─────────────────────────────────────────────────────────────────────────────
+
+classes:
+  - name: OrganisationUnit
+    description: "Root class for any unit within the organisation."
+    abstract: true           # Not instantiated directly — use subclasses
+    subclasses:
+
+      - name: Division
+        description: "Top-level business division. Instances live in ontology/instances/, not here."
+        notes: >
+          A Division is the highest unit below the enterprise root.
+          Actual division names (Retail, BCB, IP&P, etc.) are instance data —
+          see ontology/instances/ for per-division instance files.
+          Each Division contains multiple Platforms.
+          Open question: do we need an Enterprise root node above Division,
+          or is Division sufficient?
+
+      - name: Platform
+        description: "A product or capability platform within a Division, grouping related Labs."
+        notes: >
+          Platform sits between Division and Lab in the 4-level hierarchy.
+          A Division contains multiple Platforms; a Platform contains multiple Labs.
+          Platforms are aligned to a broad product or capability domain.
+          Actual platform names are instance data — see ontology/instances/ for per-division instance files.
+          Open question: should Platform also link to Capability (GOV module)?
+
+      - name: Lab
+        description: "A delivery lab within a Platform, grouping related Teams around a shared product area."
+        notes: >
+          Lab sits between Platform and Team in the 4-level hierarchy.
+          A Platform contains multiple Labs; a Lab contains multiple Teams.
+          Actual lab names are instance data — see ontology/instances/ for per-division instance files.
+
+      - name: Team
+        description: "An engineering team owning one or more systems or components."
+        notes: >
+          Teams normally partOf a Lab. Enabling teams (e.g. Architecture, Security)
+          may partOf a Platform or Division directly. Using Team Topologies taxonomy
+          for team types (see teamType property).
+          Actual team names are instance data — see ontology/instances/ for per-division instance files.
+        subclasses:
+
+          - name: StreamAlignedTeam
+            description: >
+              Long-lived team aligned to a flow of work from a business domain.
+              Primary team type — owns product features end-to-end.
+
+          - name: PlatformTeam
+            description: >
+              Provides internal services / tooling to reduce cognitive load
+              for stream-aligned teams (e.g. Cloud Platform, Developer Experience).
+
+          - name: EnablingTeam
+            description: >
+              Specialist team that helps other teams acquire new capabilities
+              (e.g. Architecture, Security, Data Engineering enabling teams).
+
+          - name: ComplicatedSubsystemTeam
+            description: >
+              Owns a complex subsystem requiring deep specialist knowledge
+              (e.g. a pricing engine, a risk calculation engine).
+            notes: >
+              Rare in most orgs. Only use when the subsystem is genuinely
+              too complex to be maintained by a stream-aligned team.
+
+  - name: Person
+    description: "An individual — architect, engineer, product owner, etc."
+    abstract: false
+    subclasses:
+
+      - name: Architect
+        description: "A person in an architecture role."
+        subclasses:
+          - name: SolutionArchitect
+            description: "Designs solutions for specific systems or domains."
+          - name: EnterpriseArchitect
+            description: "Works across the whole organisation on strategy and standards."
+          - name: SecurityArchitect
+            description: "Specialist architect for security design."
+          - name: DataArchitect
+            description: "Specialist architect for data platform and models."
+
+      - name: Engineer
+        description: "A software or platform engineer."
+        subclasses:
+          - name: PrincipalEngineer
+            description: "Senior technical leader, often cross-team."
+          - name: StaffEngineer
+            description: "Staff-level engineer with broad technical scope."
+
+      - name: ProductOwner
+        description: "Accountable for product backlog and business value."
+
+      - name: TechLead
+        description: >
+          Technical lead for a team — may or may not be a formal job title.
+          Often the person who 'ledBy' points to.
+        notes: >
+          Open question: is TechLead a role on a Person, or a subclass?
+          Consider making this a data property (role: "tech-lead") rather than a subclass.
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 2. OBJECT PROPERTIES (Relationships between nodes)
+#
+# Each property has:
+#   domain:      which class(es) the relationship goes FROM
+#   range:       which class(es) the relationship goes TO
+#   owl_axioms:  OWL characteristics — transitive, functional, symmetric, etc.
+#   inverse_of:  the reverse property name (if defined)
+#   notes:       design rationale / open questions
+# ─────────────────────────────────────────────────────────────────────────────
+
+object_properties:
+
+  - name: partOf
+    description: >
+      Expresses membership in the 4-level organisational hierarchy.
+      Team → Lab → Platform → Division.
+    domain: [Team, Lab, Platform]
+    range: [Lab, Platform, Division]
+    owl_axioms:
+      - transitive: true        # Team partOf Lab partOf Platform partOf Division → transitive membership
+    notes: >
+      Transitivity means you can ask "which teams belong to the BCB Division?"
+      with a single Cypher query — the path Team→Lab→Platform→Division is
+      traversed automatically without hop-by-hop joins.
+      Enabling teams (Architecture, Security) may skip Lab and partOf a Platform
+      or Division directly.
+      Open question: can a Team be partOf two Labs (matrix org)?
+      If yes, allow multiple partOf edges.
+
+  - name: owns
+    description: "A Team is the accountable owner of a System or Component."
+    domain: [Team]
+    range: [System, Component]   # System + Component are in SYS module — cross-module reference
+    inverse_of: ownedBy
+    notes: >
+      Ownership = accountability, not just contribution.
+      A component should have exactly one owning team (see constraint C4).
+
+  - name: ledBy
+    description: "The designated technical lead or DRI for a Team."
+    domain: [Team]
+    range: [Person]
+    owl_axioms:
+      - functional: true        # A team has at most one lead at any time
+    notes: >
+      Open question: should we model lead *tenure* (ledBy with effectiveFrom/To dates)?
+      Useful for "who was the lead when this ADR was made?" queries.
+
+  - name: memberOf
+    description: "A Person is a member of a Team."
+    domain: [Person]
+    range: [Team]
+    notes: >
+      A person can be a member of multiple teams (e.g. an architect embedded
+      in a delivery team + member of enabling architecture team).
+
+  - name: reportsTo
+    description: "Organisational reporting line between teams or org units."
+    domain: [Team]
+    range: [OrganisationUnit]
+    notes: >
+      Distinct from partOf. partOf is the value-stream / platform alignment;
+      reportsTo is the HR/management hierarchy. These often differ in matrix orgs.
+      Open question: do we need both, or is partOf sufficient?
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 3. DATA PROPERTIES (Attributes on nodes)
+#
+# Each property has:
+#   domain:     which class(es) carry this attribute
+#   type:       string | integer | date | datetime | boolean | list[string]
+#   enum:       if type is string but values are restricted (enumeration)
+#   constraints: NOT NULL | UNIQUE | etc. — enforced at ingestion time
+#   example:    a realistic sample value
+# ─────────────────────────────────────────────────────────────────────────────
+
+data_properties:
+
+  # ── OrganisationUnit properties ──────────────────────────────────────────
+
+  - name: name
+    domain: [OrganisationUnit, Person]
+    type: string
+    constraints: [NOT NULL]
+    example: "Retail Division"
+    notes: "Unique within each label type (Division, Platform, Team)."
+
+  - name: code
+    domain: [OrganisationUnit]
+    type: string
+    example: "RET-001"
+    notes: "Short machine-readable identifier. Optional but recommended."
+
+  - name: description
+    domain: [OrganisationUnit]
+    type: string
+    example: "Owns all retail banking products."
+
+  # ── Team-specific properties ─────────────────────────────────────────────
+
+  - name: teamType
+    domain: [Team]
+    type: string
+    enum:
+      - stream-aligned
+      - platform
+      - enabling
+      - complicated-subsystem
+    constraints: [NOT NULL]
+    example: "stream-aligned"
+    notes: "Based on Team Topologies taxonomy."
+
+  - name: slackChannel
+    domain: [Team]
+    type: string
+    example: "#team-payments"
+
+  - name: contactEmail
+    domain: [Team]
+    type: string
+    example: "team-payments@acme.com"
+
+  - name: costCentre
+    domain: [Team]
+    type: string
+    example: "CC-4412"
+    notes: "Useful for mapping team spend to systems they own."
+
+  - name: confluenceSpace
+    domain: [Team]
+    type: string
+    example: "https://confluence.acme.com/display/PAY"
+    notes: "Link to this team's primary documentation space."
+
+  # ── Person-specific properties ───────────────────────────────────────────
+
+  - name: email
+    domain: [Person]
+    type: string
+    constraints: [NOT NULL, UNIQUE]
+    example: "jane.smith@acme.com"
+
+  - name: role
+    domain: [Person]
+    type: string
+    example: "Solution Architect"
+
+  - name: jobTitle
+    domain: [Person]
+    type: string
+    example: "Principal Engineer"
+
+  - name: employeeId
+    domain: [Person]
+    type: string
+    constraints: [UNIQUE]
+    example: "EMP-00123"
+    notes: >
+      Useful for linking to HR systems. Handle with care — PII.
+      May be omitted in non-restricted environments.
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 4. NEO4J CONSTRAINTS
+#
+# These are applied as Cypher constraints when the graph is initialised.
+# C = constraint, I = index.
+# ─────────────────────────────────────────────────────────────────────────────
+
+constraints:
+  - id: C1
+    type: uniqueness
+    label: OrganisationUnit
+    property: name
+    cypher: "CREATE CONSTRAINT org_unit_name IF NOT EXISTS FOR (n:OrganisationUnit) REQUIRE n.name IS UNIQUE"
+
+  - id: C2
+    type: existence
+    label: Team
+    property: name
+    cypher: "CREATE CONSTRAINT team_name_exists IF NOT EXISTS FOR (n:Team) REQUIRE n.name IS NOT NULL"
+
+  - id: C3
+    type: existence
+    label: Team
+    property: teamType
+    cypher: "CREATE CONSTRAINT team_type_exists IF NOT EXISTS FOR (n:Team) REQUIRE n.teamType IS NOT NULL"
+
+  - id: C4
+    type: application_layer     # Neo4j can't enforce cardinality natively
+    description: "Every Team must have a partOf relationship to a Lab (or Platform/Division for enabling teams)."
+    validation: "MATCH (t:Team) WHERE NOT EXISTS { (t)-[:PART_OF]->(:Lab|:Platform|:Division) } RETURN t.name AS orphanedTeam"
+
+  - id: C6
+    type: application_layer
+    description: "Every Lab must have a partOf relationship to a Platform."
+    validation: "MATCH (l:Lab) WHERE NOT EXISTS { (l)-[:PART_OF]->(:Platform) } RETURN l.name AS orphanedLab"
+
+  - id: C7
+    type: application_layer
+    description: "Every Platform must have a partOf relationship to a Division."
+    validation: "MATCH (p:Platform) WHERE NOT EXISTS { (p)-[:PART_OF]->(:Division) } RETURN p.name AS orphanedPlatform"
+
+  - id: C5
+    type: uniqueness
+    label: Person
+    property: email
+    cypher: "CREATE CONSTRAINT person_email IF NOT EXISTS FOR (n:Person) REQUIRE n.email IS UNIQUE"
+
+  - id: I1
+    type: index
+    label: OrganisationUnit
+    property: name
+    cypher: "CREATE INDEX org_name_idx IF NOT EXISTS FOR (n:OrganisationUnit) ON (n.name)"
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 5. OPEN QUESTIONS / DESIGN DECISIONS
+#
+# Record unresolved decisions here. Move to "resolved:" once agreed.
+# ─────────────────────────────────────────────────────────────────────────────
+
+open_questions:
+  - id: OQ-ORG-1
+    question: >
+      Do we need an Enterprise root node above Division, or is Division the top?
+    options:
+      - "Division is the root — simpler, sufficient for one org"
+      - "Add Enterprise → Division → Platform → Team for multi-org / holding company scenarios"
+    status: open
+
+  - id: OQ-ORG-2
+    question: >
+      Can a Team belong to more than one Platform (matrix org)?
+    options:
+      - "No — one Platform per Team (clean hierarchy, strict accountability)"
+      - "Yes — remove functional constraint on partOf, allow multiple edges"
+    status: open
+
+  - id: OQ-ORG-3
+    question: >
+      Should we model lead tenure? (who was lead during a given time period)
+    options:
+      - "No — current lead only is sufficient"
+      - "Yes — add effectiveFrom/To timestamps on the ledBy relationship"
+    status: open
+
+  - id: OQ-ORG-4
+    question: >
+      Is TechLead a subclass of Person, or just a role (data property)?
+    options:
+      - "Subclass — if we want to query 'all tech leads' as a label"
+      - "Data property role='tech-lead' — simpler, avoids class proliferation"
+    recommended: "Data property — avoids class proliferation"
+    status: open

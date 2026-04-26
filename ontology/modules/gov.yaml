@@ -1,0 +1,795 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# MODULE: Governance & Risk Ontology (GOV)
+# Namespace: #gov
+# Purpose: Captures the governance layer — risks, constraints, requirements,
+#          capabilities, business domains, compliance frameworks, and the
+#          ontology change management process itself. Answers: what risks
+#          exist, what constraints apply, what capabilities are implemented,
+#          which compliance frameworks are in scope.
+#
+# Cross-module references:
+#   → SYS: System/Component satisfies Requirement, complianceWith Constraint
+#   → ORG: Domain/Capability ownedBy Team, Risk raisedBy Person
+#   → DEC: mitigates links Component/Pattern → Risk; addressesQuality for Compliance QA
+#   → ART: RiskRegister Document extractedFrom Risk nodes
+# ─────────────────────────────────────────────────────────────────────────────
+
+module:
+  id: GOV
+  name: Governance & Risk Ontology
+  namespace: "http://acme.org/ontology#gov"
+  version: "0.1-draft"
+  status: draft
+  notes: >
+    The governance module serves two purposes:
+    1. Business context — Capabilities, Domains, BusinessProcesses link the
+       technical architecture to the organisation's reason for existing.
+    2. Constraints & risk — Risks, Constraints, Assumptions, Requirements,
+       Compliance ensure the architecture is honest about what it must satisfy.
+    It also contains the self-referential ontology change management process
+    (OntologyChangeRequest, UnresolvedConcept) so we can govern the knowledge
+    graph itself using the knowledge graph.
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 1. CLASS HIERARCHY
+# ─────────────────────────────────────────────────────────────────────────────
+
+classes:
+
+  # ── Business Context ──────────────────────────────────────────────────────
+
+  - name: Domain
+    description: >
+      A business domain — a bounded area of the business with its own language,
+      rules, and data ownership. Examples: Payments, Identity, Lending, Orders,
+      Notifications, Risk & Fraud.
+    notes: >
+      Domains are the primary organising principle for the architecture.
+      Each Domain is owned by one or more Teams and contains multiple Capabilities.
+      Domains align to Bounded Contexts in Domain-Driven Design.
+    subclasses:
+      - name: CoreDomain
+        description: >
+          Domain that is a core competitive differentiator — invest heavily.
+          Example: Lending decision engine (if that's our USP).
+      - name: SupportingDomain
+        description: >
+          Necessary but not a differentiator — build leanly or buy.
+          Example: Notifications, Reporting.
+      - name: GenericDomain
+        description: >
+          Commodity domain — strongly consider buying off the shelf.
+          Example: Identity and Access Management, HR.
+
+  - name: Capability
+    description: >
+      A discrete business or technical capability the organisation needs
+      in order to operate. Capabilities are stable — they don't change
+      when the systems implementing them change.
+    notes: >
+      Capability Map is one of the most valuable views in the knowledge graph:
+      "Which systems implement the 'Process Payment' capability?"
+      "Which capabilities have no clear system owner?"
+      Capabilities are intentionally stable — the implementing system may change,
+      but the capability remains.
+    subclasses:
+      - name: BusinessCapability
+        description: "A capability from the business's perspective. e.g. 'Process Payment', 'Onboard Customer'."
+        subclasses:
+          - name: StrategicCapability
+            description: "Capabilities that drive the organisation's competitive strategy."
+          - name: OperationalCapability
+            description: "Day-to-day operational capabilities."
+          - name: SupportCapability
+            description: "Enabling capabilities — HR, Finance, IT."
+      - name: TechnicalCapability
+        description: "A platform-level technical capability. e.g. 'Multi-region HA', 'Real-time streaming'."
+
+  - name: BusinessProcess
+    description: >
+      A defined sequence of activities that the organisation executes to
+      achieve a business outcome. More specific than a Capability.
+      Example: 'Customer onboarding', 'Loan origination', 'Fraud investigation'.
+    notes: >
+      BusinessProcess → supported by → System
+      BusinessCapability → implemented by → System
+      These are related but different: a Process is a flow of work;
+      a Capability is an organisational ability.
+
+  # ── Risk ─────────────────────────────────────────────────────────────────
+
+  - name: Risk
+    description: >
+      An identified architectural or operational risk — something that could
+      go wrong and cause harm to the business or its customers.
+    notes: >
+      Risks are first-class nodes. They can be mitigated (by components, patterns,
+      security controls), accepted (documented with rationale), or closed.
+      Every critical risk must have a mitigates relationship before being
+      marked as accepted.
+    subclasses:
+      - name: TechnicalRisk
+        description: >
+          Risks arising from technical choices or gaps.
+          e.g. single point of failure, no circuit breaker, deprecated library.
+        subclasses:
+          - name: ScalabilityRisk
+            description: "System may not handle projected load."
+          - name: ReliabilityRisk
+            description: "Component or dependency may fail under normal conditions."
+          - name: DataLossRisk
+            description: "Risk of losing data due to architecture gaps."
+          - name: TechnologyObsolescenceRisk
+            description: "Risk from using deprecated or end-of-life technology."
+      - name: SecurityRisk
+        description: >
+          Risks to the confidentiality, integrity, or availability of the system.
+          e.g. insufficient authentication, unencrypted data at rest, SSRF vulnerability.
+        subclasses:
+          - name: ExposureRisk
+            description: "Risk of sensitive data being exposed."
+          - name: AccessControlRisk
+            description: "Risk from insufficient authentication or authorisation."
+          - name: SupplyChainRisk
+            description: "Risk from third-party dependencies (libraries, vendors, APIs)."
+      - name: ComplianceRisk
+        description: >
+          Risk of failing to meet a regulatory or policy obligation.
+          e.g. GDPR breach, PCI-DSS gap, data residency violation.
+      - name: OperationalRisk
+        description: >
+          Risks to the smooth operation of a system.
+          e.g. no runbook, insufficient monitoring, no DR plan.
+      - name: ArchitectureDebtRisk
+        description: >
+          Risk accumulated from deferred architectural decisions or shortcuts.
+          e.g. a monolith that needs decomposition, inconsistent API contracts.
+
+  # ── Constraints ───────────────────────────────────────────────────────────
+
+  - name: Constraint
+    description: >
+      A condition the architecture must satisfy — regulatory, technical, or commercial.
+      Constraints are not optional; they are non-negotiable conditions of operation.
+    subclasses:
+      - name: RegulatoryConstraint
+        description: >
+          Constraint imposed by law or regulation.
+          e.g. GDPR data residency, PCI-DSS tokenisation, FCA conduct rules.
+        subclasses:
+          - name: DataResidencyConstraint
+            description: "Data must remain within a specified geographic region."
+          - name: DataRetentionConstraint
+            description: "Data must be retained for a minimum / maximum period."
+          - name: PrivacyConstraint
+            description: "PII handling rules — consent, right to erasure, data minimisation."
+      - name: TechnicalConstraint
+        description: >
+          Constraint arising from technical limitations.
+          e.g. max latency SLA, compatibility with legacy system X, memory limit.
+      - name: BudgetConstraint
+        description: "Cost ceiling or licensing cap constraining technology choices."
+      - name: PolicyConstraint
+        description: >
+          Internal policy constraint (not regulatory).
+          e.g. no third-party SaaS for customer PII, approved cloud providers only.
+
+  # ── Assumptions ──────────────────────────────────────────────────────────
+
+  - name: Assumption
+    description: >
+      A stated assumption made during design — something believed to be true
+      but not yet confirmed. Assumptions that turn out to be false can become
+      architectural risks.
+    notes: >
+      Assumptions have a validUntil date — after that date, they should be
+      reviewed and either confirmed, updated, or converted into risks.
+      Extract assumptions from HLDs and LLDs during ingestion.
+
+  # ── Requirements ─────────────────────────────────────────────────────────
+
+  - name: Requirement
+    description: >
+      A formal requirement the system must satisfy. May be functional or
+      non-functional. Source: product briefs, regulatory mandates, contracts.
+    subclasses:
+      - name: FunctionalRequirement
+        description: "What the system must do (feature, behaviour, data)."
+      - name: NonFunctionalRequirement
+        description: >
+          How the system must behave (performance, security, availability).
+          NFRs are closely related to QualityAttributes in DEC —
+          they express the *target*; the QualityAttribute expresses the *type*.
+        notes: >
+          Relationship: (nfr:NFR)-[:TARGETS]->(qa:QualityAttribute)
+          This links requirements to the quality model.
+      - name: RegulatoryRequirement
+        description: >
+          A requirement that stems from a regulatory obligation
+          (e.g. 'System must log all access to customer PII for 7 years').
+
+  # ── Compliance Frameworks ─────────────────────────────────────────────────
+
+  - name: Compliance
+    description: >
+      A compliance framework or standard the organisation or system must
+      adhere to. Distinct from a Constraint (which is a specific rule) and
+      from the QualityAttribute Compliance (which is the property being measured).
+    subclasses:
+      - name: DataProtectionFramework
+        description: "e.g. GDPR, CCPA, PDPA, APRA CPS 234."
+      - name: PaymentSecurityFramework
+        description: "e.g. PCI-DSS, PCI-3DS, ISO 20022."
+      - name: FinancialServicesFramework
+        description: "e.g. FCA SYSC, Basel III, SOX, DORA (EU Digital Operational Resilience Act)."
+      - name: SecurityFramework
+        description: "e.g. ISO 27001, SOC 2, NIST CSF, CIS Controls."
+      - name: CloudFramework
+        description: "e.g. CSA STAR, AWS Well-Architected, Azure Landing Zone."
+
+  # ── Security Controls ─────────────────────────────────────────────────────
+
+  - name: SecurityControl
+    description: >
+      A specific security mechanism applied to protect a system or component.
+      Distinct from SecurityRisk (what could go wrong) and Compliance (the framework).
+    subclasses:
+      - name: IdentityControl
+        description: "Authentication and authorisation mechanisms."
+        subclasses:
+          - name: OAuth2
+            description: "OAuth 2.0 / OIDC for user authentication."
+          - name: MFA
+            description: "Multi-factor authentication."
+          - name: ServiceIdentity
+            description: "Service-to-service identity (mTLS, SPIFFE/SPIRE)."
+      - name: NetworkControl
+        description: "Network-level security controls."
+        subclasses:
+          - name: WAF
+            description: "Web Application Firewall."
+          - name: DDoSProtection
+            description: "Distributed denial of service protection."
+          - name: PrivateLink
+            description: "Private network connectivity (no public internet traversal)."
+      - name: DataControl
+        description: "Data protection controls."
+        subclasses:
+          - name: EncryptionAtRest
+            description: "Encryption of stored data."
+          - name: EncryptionInTransit
+            description: "TLS/mTLS for data in transit."
+          - name: Tokenisation
+            description: "Replacing sensitive data with tokens (e.g. PAN tokenisation)."
+          - name: DataMasking
+            description: "Masking PII in non-production environments."
+      - name: ApplicationControl
+        description: "Application-layer security controls."
+        subclasses:
+          - name: InputValidation
+            description: "Validation and sanitisation of inputs."
+          - name: RateLimiting
+            description: "API rate limiting and throttling."
+          - name: AuditLogging
+            description: "Comprehensive audit trail of security-relevant actions."
+
+  # ── Ontology Self-Governance ──────────────────────────────────────────────
+
+  - name: UnresolvedConcept
+    description: >
+      A concept extracted from a document that could not be mapped to an existing
+      ontology class. Queued for human review — do we add a new class, or is
+      there an existing class that should cover this?
+    notes: >
+      This is the ingestion pipeline's safety valve. Rather than blocking on
+      every unknown concept, we create an UnresolvedConcept node and continue.
+      A regular governance review resolves these — either mapping them to
+      existing classes or triggering an OntologyChangeRequest.
+
+  - name: OntologyChangeRequest
+    description: >
+      A governance artefact for proposing a change to the ontology.
+      Created when an UnresolvedConcept recurs frequently enough to warrant
+      a new class, or when a new relationship type is needed.
+    notes: >
+      Change process:
+      1. UnresolvedConcept flagged by ingestion pipeline
+      2. Architecture team reviews → creates OntologyChangeRequest
+      3. OCR reviewed by governance board
+      4. If approved → ontology YAML updated → Python generated → Neo4j migrated
+      5. Affected documents re-ingested
+
+  - name: DataLineage
+    description: >
+      Tracks the flow of data between components and systems.
+      Answers: where does this data come from, where does it go?
+    notes: >
+      Open question: should DataLineage be in SYS (it's about systems) or
+      GOV (it's about governance and compliance, especially GDPR)?
+      Current choice: GOV — data lineage is primarily a governance concern.
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 2. OBJECT PROPERTIES
+# ─────────────────────────────────────────────────────────────────────────────
+
+object_properties:
+
+  - name: belongsToDomain
+    description: "A System or Component belongs to a business Domain."
+    domain: [System, Component]
+    range: [Domain]
+    notes: >
+      Every System should belong to exactly one Domain (see constraint C1).
+      A Component inherits its domain from its parent System unless explicitly overridden.
+
+  - name: ownedByTeam
+    description: "A Domain or Capability is owned by a Team."
+    domain: [Domain, Capability]
+    range: [Team]   # Team defined in ORG
+    notes: >
+      Domain ownership = who sets the rules for that domain.
+      Capability ownership = who is accountable for delivering that capability.
+
+  - name: implementsCapability
+    description: "A System or Component implements a Capability."
+    domain: [System, Component]
+    range: [Capability]
+    notes: >
+      The capability map: "Which systems implement 'Process Payment'?"
+      A capability can be implemented by multiple systems (redundant).
+      A gap = a Capability with no implementsCapability relationship.
+
+  - name: supportsProcess
+    description: "A System or Component supports a BusinessProcess."
+    domain: [System, Component]
+    range: [BusinessProcess]
+
+  - name: partOfDomain
+    description: "A Capability is part of a Domain."
+    domain: [Capability]
+    range: [Domain]
+
+  - name: subCapabilityOf
+    description: "A Capability is a sub-capability of a parent Capability."
+    domain: [Capability]
+    range: [Capability]
+    owl_axioms:
+      - transitive: true    # Sub-capabilities compose into the parent hierarchy
+
+  - name: mitigates
+    description: "A Component, Pattern, or SecurityControl mitigates a Risk."
+    domain: [Component, ArchitecturePattern, SecurityControl]
+    range: [Risk]
+    notes: >
+      Cross-module: Component and Infrastructure from SYS; Pattern from DEC.
+      Critical risk rule (R5): a Risk with riskLevel='critical' must have
+      at least one mitigates relationship.
+
+  - name: satisfies
+    description: "A Component or System satisfies a Requirement."
+    domain: [Component, System]
+    range: [Requirement]
+
+  - name: complianceWith
+    description: "A System or Component complies with a Constraint or Compliance framework."
+    domain: [System, Component]
+    range: [Constraint, Compliance]
+
+  - name: constrainedBy
+    description: "A System or Component is constrained by a Constraint."
+    domain: [System, Component]
+    range: [Constraint]
+
+  - name: appliesControl
+    description: "A SecurityControl is applied to protect a Component or System."
+    domain: [SecurityControl]
+    range: [Component, System]
+
+  - name: raisedBy
+    description: "A Risk or Assumption was identified / raised by a Person."
+    domain: [Risk, Assumption]
+    range: [Person]
+
+  - name: mitigatedByControl
+    description: "A Risk is specifically mitigated by a SecurityControl."
+    domain: [Risk]
+    range: [SecurityControl]
+
+  - name: targetsQuality
+    description: "A NonFunctionalRequirement targets a QualityAttribute (from DEC)."
+    domain: [NonFunctionalRequirement]
+    range: [QualityAttribute]   # QualityAttribute defined in DEC
+
+  - name: requiresCompliance
+    description: "A Constraint is mandated by a Compliance framework."
+    domain: [Constraint]
+    range: [Compliance]
+
+  - name: mapsToUnresolved
+    description: "An UnresolvedConcept is linked to a pending OntologyChangeRequest."
+    domain: [UnresolvedConcept]
+    range: [OntologyChangeRequest]
+
+  - name: dataFlowsTo
+    description: "Data flows from one Component to another (DataLineage)."
+    domain: [Component]
+    range: [Component]
+    notes: >
+      Used for data lineage mapping. Edge properties:
+        dataClassification: string (PII | financial | operational)
+        protocol: string (HTTP | Kafka | SQL | SFTP)
+
+  - name: replacedBy
+    description: "A deprecated Component is being replaced by this Component."
+    domain: [Component]
+    range: [Component]
+    notes: >
+      Cross-module: Component defined in SYS.
+      A Component with componentStatus='deprecated' should have this relationship.
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 3. DATA PROPERTIES
+# ─────────────────────────────────────────────────────────────────────────────
+
+data_properties:
+
+  # ── Domain properties ────────────────────────────────────────────────────
+
+  - name: domainType
+    domain: [Domain]
+    type: string
+    enum:
+      - core          # Competitive differentiator — invest heavily
+      - supporting    # Necessary — build leanly or buy
+      - generic       # Commodity — strongly consider buying
+    example: "core"
+
+  # ── Capability properties ────────────────────────────────────────────────
+
+  - name: capabilityLevel
+    domain: [Capability]
+    type: string
+    enum:
+      - strategic
+      - core
+      - support
+    example: "core"
+
+  - name: maturityScore
+    domain: [Capability]
+    type: integer
+    example: 3
+    notes: "1–5 scale. 1 = no capability, 5 = industry-leading."
+
+  - name: capabilityGap
+    domain: [Capability]
+    type: boolean
+    example: false
+    notes: "Set to true if the capability has no system implementing it (orphaned capability)."
+
+  # ── Risk properties ──────────────────────────────────────────────────────
+
+  - name: riskId
+    domain: [Risk]
+    type: string
+    constraints: [UNIQUE]
+    example: "RISK-2024-012"
+
+  - name: riskLevel
+    domain: [Risk]
+    type: string
+    enum:
+      - low
+      - medium
+      - high
+      - critical
+    constraints: [NOT NULL]
+    example: "high"
+
+  - name: likelihood
+    domain: [Risk]
+    type: string
+    enum:
+      - unlikely
+      - possible
+      - likely
+      - certain
+    example: "possible"
+
+  - name: impact
+    domain: [Risk]
+    type: string
+    enum:
+      - low
+      - medium
+      - high
+      - critical
+    example: "high"
+
+  - name: riskStatus
+    domain: [Risk]
+    type: string
+    enum:
+      - open          # Identified, not yet mitigated
+      - mitigated     # Controls in place — risk reduced
+      - accepted      # Risk accepted with documented rationale (residual risk)
+      - closed        # No longer applicable
+    constraints: [NOT NULL]
+    example: "open"
+
+  - name: residualRiskLevel
+    domain: [Risk]
+    type: string
+    enum: [low, medium, high, critical]
+    example: "low"
+    notes: "Risk level after mitigations are applied."
+
+  - name: riskOwner
+    domain: [Risk]
+    type: string
+    example: "jane@acme.com"
+    notes: "Person accountable for tracking and resolving this risk."
+
+  # ── Constraint properties ────────────────────────────────────────────────
+
+  - name: constraintType
+    domain: [Constraint]
+    type: string
+    example: "Data residency"
+
+  - name: regulatoryBody
+    domain: [RegulatoryConstraint]
+    type: string
+    example: "FCA"
+
+  - name: enforcementDate
+    domain: [Constraint]
+    type: date
+    example: "2024-09-01"
+
+  - name: penaltyForNonCompliance
+    domain: [RegulatoryConstraint]
+    type: string
+    example: "Up to 4% of global annual turnover (GDPR Art. 83)"
+
+  # ── Assumption properties ────────────────────────────────────────────────
+
+  - name: assumptionText
+    domain: [Assumption]
+    type: string
+    constraints: [NOT NULL]
+    example: "We assume the third-party identity provider will maintain 99.9% SLA."
+
+  - name: validUntil
+    domain: [Assumption]
+    type: date
+    example: "2025-12-31"
+    notes: "Review date — assumption should be re-validated before this date."
+
+  - name: assumptionStatus
+    domain: [Assumption]
+    type: string
+    enum:
+      - active        # Assumption is in force
+      - validated     # Assumption was confirmed as correct
+      - invalidated   # Assumption was found to be wrong — likely now a Risk
+      - expired       # Past validUntil date without review
+    example: "active"
+
+  # ── Requirement properties ───────────────────────────────────────────────
+
+  - name: requirementId
+    domain: [Requirement]
+    type: string
+    constraints: [UNIQUE]
+    example: "REQ-FUNC-001"
+
+  - name: priority
+    domain: [Requirement]
+    type: string
+    enum:
+      - must          # MoSCoW: Must have
+      - should        # MoSCoW: Should have
+      - could         # MoSCoW: Could have
+      - wont          # MoSCoW: Won't have (this release)
+    example: "must"
+
+  - name: requirementSource
+    domain: [Requirement]
+    type: string
+    example: "Product brief v2.3, section 4.1"
+
+  - name: requirementStatus
+    domain: [Requirement]
+    type: string
+    enum:
+      - draft
+      - approved
+      - implemented
+      - verified
+      - deprecated
+    example: "implemented"
+
+  # ── SecurityControl properties ───────────────────────────────────────────
+
+  - name: controlFramework
+    domain: [SecurityControl]
+    type: string
+    example: "NIST CSF"
+
+  - name: controlId
+    domain: [SecurityControl]
+    type: string
+    example: "PR.AC-1"
+    notes: "Reference ID within the control framework."
+
+  # ── UnresolvedConcept properties ─────────────────────────────────────────
+
+  - name: extractedText
+    domain: [UnresolvedConcept]
+    type: string
+    constraints: [NOT NULL]
+    example: "sidecar proxy"
+    notes: "The raw text that could not be mapped to an ontology class."
+
+  - name: suggestedClass
+    domain: [UnresolvedConcept]
+    type: string
+    example: "Infrastructure > ServiceMesh"
+    notes: "Human-provided suggestion for where this concept should be mapped."
+
+  - name: occurrenceCount
+    domain: [UnresolvedConcept]
+    type: integer
+    example: 7
+    notes: "How many times this concept appeared across all ingested documents."
+
+  - name: reviewStatus
+    domain: [UnresolvedConcept, OntologyChangeRequest]
+    type: string
+    enum:
+      - pending
+      - in-review
+      - resolved-mapped   # Mapped to existing class — no ontology change needed
+      - resolved-new      # New class approved and added
+      - resolved-rejected # Concept determined to be out of scope
+    example: "pending"
+
+  # ── OntologyChangeRequest properties ────────────────────────────────────
+
+  - name: proposedChange
+    domain: [OntologyChangeRequest]
+    type: string
+    constraints: [NOT NULL]
+    example: "Add 'SidecarProxy' as a subclass of Infrastructure > ServiceMesh"
+
+  - name: changeRationale
+    domain: [OntologyChangeRequest]
+    type: string
+    example: "Appears in 7 documents; cannot be adequately modelled as ServiceMesh instance."
+
+  - name: changeImpact
+    domain: [OntologyChangeRequest]
+    type: string
+    enum:
+      - additive        # New class/property — no existing nodes affected
+      - breaking        # Changes existing class — migration script needed
+      - deprecation     # Removing/renaming — migration required
+    example: "additive"
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 4. NEO4J CONSTRAINTS
+# ─────────────────────────────────────────────────────────────────────────────
+
+constraints:
+  - id: C1
+    type: application_layer
+    description: "Every System must belong to exactly one Domain."
+    validation: >
+      MATCH (s:System)
+      WHERE NOT EXISTS { (s)-[:BELONGS_TO_DOMAIN]->(:Domain) }
+      RETURN s.name AS systemWithoutDomain
+
+  - id: C2
+    type: uniqueness
+    label: Risk
+    property: riskId
+    cypher: "CREATE CONSTRAINT risk_id IF NOT EXISTS FOR (n:Risk) REQUIRE n.riskId IS UNIQUE"
+
+  - id: C3
+    type: existence
+    label: Risk
+    property: riskLevel
+    cypher: "CREATE CONSTRAINT risk_level IF NOT EXISTS FOR (n:Risk) REQUIRE n.riskLevel IS NOT NULL"
+
+  - id: C4
+    type: application_layer
+    description: "A critical Risk must have at least one mitigates relationship."
+    validation: >
+      MATCH (r:Risk {riskLevel: 'critical'})
+      WHERE NOT EXISTS { ()-[:MITIGATES]->(r) }
+      RETURN r.riskId AS unmitgatedCriticalRisk
+
+  - id: C5
+    type: uniqueness
+    label: Requirement
+    property: requirementId
+    cypher: "CREATE CONSTRAINT req_id IF NOT EXISTS FOR (n:Requirement) REQUIRE n.requirementId IS UNIQUE"
+
+  - id: C6
+    type: existence
+    label: Assumption
+    property: assumptionText
+    cypher: "CREATE CONSTRAINT assumption_text IF NOT EXISTS FOR (n:Assumption) REQUIRE n.assumptionText IS NOT NULL"
+
+  - id: I1
+    type: fulltext_index
+    labels: [Risk]
+    properties: [riskId, riskLevel, riskStatus]
+    cypher: "CREATE INDEX risk_search IF NOT EXISTS FOR (n:Risk) ON (n.riskLevel, n.riskStatus)"
+
+  - id: I2
+    type: fulltext_index
+    labels: [UnresolvedConcept]
+    properties: [extractedText]
+    cypher: "CREATE FULLTEXT INDEX unresolved_search IF NOT EXISTS FOR (n:UnresolvedConcept) ON EACH [n.extractedText, n.suggestedClass]"
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 5. OPEN QUESTIONS
+# ─────────────────────────────────────────────────────────────────────────────
+
+open_questions:
+  - id: OQ-GOV-1
+    question: >
+      Should DataLineage be in GOV or SYS? It describes data flowing between
+      systems (SYS concern) but is primarily a compliance/governance query.
+    options:
+      - "GOV — data lineage is a compliance and governance concern"
+      - "SYS — it's a relationship between components which live in SYS"
+    recommended: "GOV — the reason to capture it is regulatory (GDPR Article 30, etc.)"
+    status: open
+
+  - id: OQ-GOV-2
+    question: >
+      Should we distinguish between 'Domain' (business domain) and 'BoundedContext'
+      (DDD concept, more technical) as separate classes?
+    options:
+      - "Separate classes — Domain = business view; BoundedContext = technical view"
+      - "One class — too subtle a distinction to maintain cleanly"
+    recommended: "One class called Domain — annotate with domainType to indicate DDD usage"
+    status: open
+
+  - id: OQ-GOV-3
+    question: >
+      Who is responsible for reviewing UnresolvedConcept nodes and creating
+      OntologyChangeRequests? How frequently?
+    options:
+      - "Architecture team — weekly review sprint"
+      - "Document owner — when they upload"
+      - "Automated — any concept with occurrenceCount > 3 auto-creates an OCR"
+    recommended: "Automated threshold (>3 occurrences) + weekly architecture team review"
+    status: open
+
+  - id: OQ-GOV-4
+    question: >
+      Do we need a 'ControlObjective' class separate from 'SecurityControl'?
+      e.g. 'Ensure all PII is encrypted' (objective) vs 'EncryptionAtRest' (control).
+    options:
+      - "Yes — objectives are the goal; controls are the mechanism. Separate classes."
+      - "No — store objective as a property on SecurityControl"
+    status: open
+
+  - id: OQ-GOV-5
+    question: >
+      Should Capability have a maturity model built in (1–5 scale) or should
+      maturity be captured via a separate CapabilityAssessment node?
+    options:
+      - "Built-in maturityScore property — simple"
+      - "Separate CapabilityAssessment node — captures who assessed, when, and evidence"
+    recommended: "Built-in for now; add CapabilityAssessment in a later iteration"
+    status: open

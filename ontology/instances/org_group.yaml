@@ -1,0 +1,65 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# ORG SEED DATA: Group-level enabling functions
+# Schema: ontology/modules/org.yaml
+# Hierarchy: These teams partOf the Group division directly (no Lab/Platform)
+#
+# Group functions serve all divisions — Architecture, Security, Data Platform,
+# Developer Experience, etc. They are loaded as a single "Group" Division so
+# cross-division queries can traverse up to the group level.
+# ─────────────────────────────────────────────────────────────────────────────
+
+division:
+  name: "Group"
+  code: "GRP"
+  description: "Group-level enabling and platform functions serving all divisions."
+
+  platforms:
+
+    - name: "Group Technology"
+      code: "GRP-TECH"
+      description: "Central technology and engineering enabling functions."
+      labs:
+
+        - name: "Enterprise Architecture"
+          code: "GRP-TECH-EA"
+          description: "Enterprise-wide architecture governance and standards."
+          teams:
+            - name: "Enterprise Architecture Team"
+              code: "GRP-TECH-EA-01"
+              teamType: enabling
+              slackChannel: "#enterprise-architecture"
+              contactEmail: "enterprise-arch@acme.com"
+
+        - name: "Cloud Platform"
+          code: "GRP-TECH-CLOUD"
+          description: "Cloud infrastructure, Kubernetes, and IaC standards."
+          teams:
+            - name: "Cloud Platform Team"
+              code: "GRP-TECH-CLOUD-01"
+              teamType: platform
+              slackChannel: "#cloud-platform"
+              contactEmail: "cloud-platform@acme.com"
+
+        - name: "Security Engineering"
+          code: "GRP-TECH-SEC"
+          description: "Application and infrastructure security controls."
+          teams:
+            - name: "Security Engineering Team"
+              code: "GRP-TECH-SEC-01"
+              teamType: enabling
+              slackChannel: "#security-engineering"
+              contactEmail: "security-eng@acme.com"
+
+        - name: "Developer Experience"
+          code: "GRP-TECH-DX"
+          description: "CI/CD, developer tooling, and engineering standards."
+          teams:
+            - name: "Developer Experience Team"
+              code: "GRP-TECH-DX-01"
+              teamType: platform
+              slackChannel: "#developer-experience"
+              contactEmail: "dev-experience@acme.com"
+
+        # Add more Group labs/teams here
+
+  direct_teams: []

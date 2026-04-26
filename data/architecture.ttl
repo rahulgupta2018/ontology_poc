@@ -1,0 +1,209 @@
+@prefix arch: <http://example.org/software-architecture-ontology#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.org/software-architecture-ontology> a owl:Ontology .
+
+arch:Component a owl:Class ;
+    rdfs:subClassOf arch:ArchitecturalConcept .
+
+arch:Service a owl:Class ;
+    rdfs:subClassOf arch:Component .
+
+arch:System a owl:Class ;
+    rdfs:subClassOf arch:ArchitecturalConcept .
+
+arch:Team a owl:Class ;
+    rdfs:subClassOf arch:ArchitecturalConcept .
+
+arch:ArchitecturalConcept a owl:Class ;
+    rdfs:subClassOf owl:Thing .
+
+arch:ArchitecturePattern a owl:Class ;
+    rdfs:subClassOf arch:ArchitecturalConcept .
+
+arch:Database a owl:Class ;
+    rdfs:subClassOf arch:Component .
+
+arch:MessageBroker a owl:Class ;
+    rdfs:subClassOf arch:Component .
+
+arch:ArchitectureDecisionRecord a owl:Class ;
+    rdfs:subClassOf arch:ArchitecturalConcept .
+
+arch:QualityAttribute a owl:Class ;
+    rdfs:subClassOf arch:ArchitecturalConcept .
+
+arch:Person a owl:Class ;
+    rdfs:subClassOf arch:ArchitecturalConcept .
+
+arch:Infrastructure a owl:Class ;
+    rdfs:subClassOf arch:ArchitecturalConcept .
+
+arch:Microservice a owl:Class ;
+    rdfs:subClassOf arch:Service .
+
+arch:Library a owl:Class ;
+    rdfs:subClassOf arch:Component .
+
+arch:RelationalDatabase a owl:Class ;
+    rdfs:subClassOf arch:Database .
+
+arch:GraphDatabase a owl:Class ;
+    rdfs:subClassOf arch:Database .
+
+arch:DocumentDatabase a owl:Class ;
+    rdfs:subClassOf arch:Database .
+
+arch:APIGateway a owl:Class ;
+    rdfs:subClassOf arch:Component .
+
+arch:Frontend a owl:Class ;
+    rdfs:subClassOf arch:Component .
+
+arch:CloudProvider a owl:Class ;
+    rdfs:subClassOf arch:Infrastructure .
+
+arch:ContainerOrchestrator a owl:Class ;
+    rdfs:subClassOf arch:Infrastructure .
+
+arch:CDN a owl:Class ;
+    rdfs:subClassOf arch:Infrastructure .
+
+arch:LoadBalancer a owl:Class ;
+    rdfs:subClassOf arch:Infrastructure .
+
+arch:Microservices a owl:Class ;
+    rdfs:subClassOf arch:ArchitecturePattern .
+
+arch:Monolith a owl:Class ;
+    rdfs:subClassOf arch:ArchitecturePattern .
+
+arch:EventDriven a owl:Class ;
+    rdfs:subClassOf arch:ArchitecturePattern .
+
+arch:CQRS a owl:Class ;
+    rdfs:subClassOf arch:ArchitecturePattern .
+
+arch:Hexagonal a owl:Class ;
+    rdfs:subClassOf arch:ArchitecturePattern .
+
+arch:LayeredArchitecture a owl:Class ;
+    rdfs:subClassOf arch:ArchitecturePattern .
+
+arch:ServerlessPattern a owl:Class ;
+    rdfs:subClassOf arch:ArchitecturePattern .
+
+arch:TechnologyChoice a owl:Class ;
+    rdfs:subClassOf arch:ArchitecturalConcept .
+
+arch:TechnologyCategory a owl:Class ;
+    rdfs:subClassOf arch:ArchitecturalConcept .
+
+arch:Scalability a owl:Class ;
+    rdfs:subClassOf arch:QualityAttribute .
+
+arch:Reliability a owl:Class ;
+    rdfs:subClassOf arch:QualityAttribute .
+
+arch:Security a owl:Class ;
+    rdfs:subClassOf arch:QualityAttribute .
+
+arch:Performance a owl:Class ;
+    rdfs:subClassOf arch:QualityAttribute .
+
+arch:Maintainability a owl:Class ;
+    rdfs:subClassOf arch:QualityAttribute .
+
+arch:Observability a owl:Class ;
+    rdfs:subClassOf arch:QualityAttribute .
+
+arch:dependsOn a owl:ObjectProperty ;
+    rdfs:domain arch:Component ;
+    rdfs:range arch:Component .
+
+arch:exposesAPI a owl:ObjectProperty ;
+    rdfs:domain arch:Service ;
+    rdfs:range arch:Component .
+
+arch:consumesAPI a owl:ObjectProperty ;
+    rdfs:domain arch:Component ;
+    rdfs:range arch:Service .
+
+arch:belongsTo a owl:ObjectProperty ;
+    rdfs:domain arch:Component ;
+    rdfs:range arch:System .
+
+arch:ownedBy a owl:ObjectProperty ;
+    rdfs:domain arch:Component ;
+    rdfs:range arch:Team .
+
+arch:followsPattern a owl:ObjectProperty ;
+    rdfs:domain arch:ArchitecturalConcept ;
+    rdfs:range arch:ArchitecturePattern .
+
+arch:usedBy a owl:ObjectProperty ;
+    rdfs:domain arch:Component ;
+    rdfs:range arch:System .
+
+arch:storesDataIn a owl:ObjectProperty ;
+    rdfs:domain arch:Service ;
+    rdfs:range arch:Database .
+
+arch:publishesTo a owl:ObjectProperty ;
+    rdfs:domain arch:Service ;
+    rdfs:range arch:MessageBroker .
+
+arch:subscribesTo a owl:ObjectProperty ;
+    rdfs:domain arch:Service ;
+    rdfs:range arch:MessageBroker .
+
+arch:addressesQuality a owl:ObjectProperty ;
+    rdfs:domain arch:ArchitectureDecisionRecord ;
+    rdfs:range arch:QualityAttribute .
+
+arch:madeBy a owl:ObjectProperty ;
+    rdfs:domain arch:ArchitectureDecisionRecord ;
+    rdfs:range arch:Person .
+
+arch:memberOf a owl:ObjectProperty ;
+    rdfs:domain arch:Person ;
+    rdfs:range arch:Team .
+
+arch:deployedOn a owl:ObjectProperty ;
+    rdfs:domain arch:Component ;
+    rdfs:range arch:Infrastructure .
+
+arch:hasName a owl:DatatypeProperty ;
+    rdfs:domain arch:ArchitecturalConcept ;
+    rdfs:range xsd:string .
+
+arch:hasDescription a owl:DatatypeProperty ;
+    rdfs:domain arch:ArchitecturalConcept ;
+    rdfs:range xsd:string .
+
+arch:hasVersion a owl:DatatypeProperty ;
+    rdfs:domain arch:Component ;
+    rdfs:range xsd:string .
+
+arch:hasEndpoint a owl:DatatypeProperty ;
+    rdfs:domain arch:Service ;
+    rdfs:range xsd:string .
+
+arch:hasLanguage a owl:DatatypeProperty ;
+    rdfs:domain arch:Component ;
+    rdfs:range xsd:string .
+
+arch:hasFramework a owl:DatatypeProperty ;
+    rdfs:domain arch:Component ;
+    rdfs:range xsd:string .
+
+arch:hasStatus a owl:DatatypeProperty ;
+    rdfs:domain arch:ArchitectureDecisionRecord ;
+    rdfs:range xsd:string .
+
+arch:hasDate a owl:DatatypeProperty ;
+    rdfs:domain arch:ArchitectureDecisionRecord ;
+    rdfs:range xsd:string .

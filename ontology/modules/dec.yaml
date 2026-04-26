@@ -1,0 +1,586 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# MODULE: Decision & Pattern Ontology (DEC)
+# Namespace: #dec
+# Purpose: Captures architectural decisions, the patterns followed, technology
+#          choices, and quality attributes being targeted. Answers: what
+#          decisions were made and why, which patterns are in use, what
+#          technologies are approved, what quality properties are being
+#          optimised for.
+#
+# Cross-module references:
+#   → ART: ArchitectureDecisionRecord is dual-module (ART + DEC)
+#   → ORG: ArchitecturalDecision madeBy Person
+#   → SYS: TechnologyChoice usedBy System/Component, Pattern followedBy System
+#   → GOV: ArchitecturalDecision addressesQuality (QualityAttribute is in DEC)
+# ─────────────────────────────────────────────────────────────────────────────
+
+module:
+  id: DEC
+  name: Decision & Pattern Ontology
+  namespace: "http://acme.org/ontology#dec"
+  version: "0.1-draft"
+  status: draft
+  notes: >
+    This module is about *intent* — why the architecture looks the way it does.
+    Patterns describe how we build; Decisions record when and why we made a choice;
+    QualityAttributes capture what properties we are optimising for;
+    TechnologyChoices record what technologies are approved, on hold, or deprecated.
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 1. CLASS HIERARCHY
+# ─────────────────────────────────────────────────────────────────────────────
+
+classes:
+
+  - name: ArchitecturalDecision
+    description: >
+      A documented decision about how to address an architectural challenge.
+      May be instantiated directly or via its document subclass (ADR in ART).
+    notes: >
+      ArchitecturalDecision is the "decision record" abstraction.
+      When it is also formally documented, it becomes an ADR (see ART module).
+      Lightweight decisions can exist in the graph as ArchitecturalDecision nodes
+      without a corresponding Document.
+    subclasses:
+      - name: ArchitectureDecisionRecord
+        description: >
+          Formally documented decision with its own ART Document node.
+          Dual-labelled in Neo4j: (:ADR:Document:ArchitecturalDecision).
+          See ART module for document-specific attributes (sourceUrl, approvedBy, etc.)
+        # ── Further subclasses inherited from ART module ──────────────────────
+        # TechnicalADR, PrinciplesADR, StandardsADR (defined in art.yaml)
+        # Listed here for cross-reference clarity.
+
+  - name: ArchitecturePattern
+    description: >
+      A named, reusable solution to a recurring architecture problem.
+      Patterns are not prescriptive — they capture trade-offs.
+    notes: >
+      Patterns are reference nodes — systems FOLLOW them, they are not owned
+      by a single team. A pattern can be global (from the industry) or local
+      (from our own pattern catalogue, documented as PatternCatalogue in ART).
+    subclasses:
+
+      - name: StructuralPattern
+        description: "Patterns that define the overall structure of a system."
+        subclasses:
+          - name: Monolith
+            description: "Single deployable unit containing all functionality."
+            subclasses:
+              - name: ModularMonolith
+                description: >
+                  Monolith with strong internal module boundaries — intentionally
+                  structured to allow future decomposition.
+          - name: Microservices
+            description: "System decomposed into fine-grained, independently deployable services."
+          - name: MacroServices
+            description: "Coarser decomposition — fewer, larger services than Microservices."
+          - name: MicroFrontends
+            description: "Frontend decomposed into independently deployable UI components."
+          - name: StranglerFig
+            description: >
+              Migration pattern — incrementally replace a monolith by routing new
+              functionality to new services while keeping the monolith for legacy features.
+
+      - name: IntegrationPattern
+        description: "Patterns for how components communicate and integrate."
+        subclasses:
+          - name: EventDriven
+            description: "Components communicate via async events through a broker."
+          - name: RequestResponse
+            description: "Synchronous HTTP/RPC communication between components."
+          - name: Choreography
+            description: >
+              Each service reacts to events and publishes its own events — no central
+              orchestrator. Decoupled but harder to trace.
+          - name: Orchestration
+            description: >
+              A central orchestrator (workflow engine) directs the sequence of steps.
+              Easier to trace but creates coupling to the orchestrator.
+          - name: APIComposition
+            description: "Aggregates data from multiple services into a single response (e.g. BFF)."
+          - name: OutboxPattern
+            description: >
+              Writes to DB and event log atomically in the same transaction to avoid
+              dual-write consistency problems.
+          - name: SagaPattern
+            description: >
+              Manages distributed transactions across services using compensating transactions.
+            subclasses:
+              - name: ChoreoSaga
+                description: "Saga implemented via choreography (event-driven)."
+              - name: OrchestratedSaga
+                description: "Saga with a central saga orchestrator."
+
+      - name: DataPattern
+        description: "Patterns for data storage, access, and consistency."
+        subclasses:
+          - name: CQRS
+            description: >
+              Command Query Responsibility Segregation — separate read and write models.
+              Often paired with EventSourcing.
+          - name: EventSourcing
+            description: >
+              State is derived from an append-only log of events.
+              The event log is the source of truth.
+          - name: DataMesh
+            description: >
+              Decentralised data ownership — teams own and publish their domain's data
+              as products via a self-serve data platform.
+          - name: SharedDatabase
+            description: >
+              Anti-pattern: multiple services sharing a single database.
+              Recorded so we can query where this pattern is still in use.
+            notes: "Tag as anti-pattern: true"
+          - name: DatabasePerService
+            description: "Each service owns and encapsulates its own data store."
+
+      - name: InfrastructurePattern
+        description: "Patterns for deployment and infrastructure."
+        subclasses:
+          - name: Serverless
+            description: "Functions or containers that scale to zero, managed by the cloud."
+          - name: ContainerBased
+            description: "Services packaged as containers, typically orchestrated by Kubernetes."
+          - name: SidecarPattern
+            description: >
+              Augments a service with a co-located sidecar container (e.g. for mTLS,
+              logging, config). Common in service mesh architectures.
+          - name: ServiceMeshPattern
+            description: "Traffic management and observability via a dedicated infrastructure layer."
+          - name: BulkheadPattern
+            description: >
+              Isolates failure domains — resource limits prevent one failing component
+              from exhausting shared resources.
+          - name: CircuitBreakerPattern
+            description: >
+              Stops cascading failures by short-circuiting calls to a failing downstream service.
+
+      - name: ApplicationPattern
+        description: "Patterns for application code structure."
+        subclasses:
+          - name: HexagonalArchitecture
+            description: >
+              Ports and Adapters — business logic is isolated from I/O adapters,
+              making it testable without infrastructure.
+          - name: LayeredArchitecture
+            description: "Traditional N-tier: presentation, business logic, data layers."
+          - name: CleanArchitecture
+            description: >
+              Concentric layers with dependency inversion — domain at centre,
+              infrastructure at the outer ring.
+          - name: DomainDrivenDesign
+            description: >
+              Aligns code structure to business domain concepts — Aggregates, Entities,
+              Value Objects, Bounded Contexts.
+          - name: CQRS
+            description: "Application-level CQRS (distinct from the data pattern above)."
+            notes: >
+              CQRS appears in both DataPattern and ApplicationPattern because it applies
+              at both layers. Consider if this duplication is confusing.
+
+  - name: QualityAttribute
+    description: >
+      A non-functional property of a system that the architecture must address.
+      Often called NFRs (non-functional requirements) or Quality of Service attributes.
+    notes: >
+      Quality attributes are the *reason* for architectural decisions.
+      Patterns and decisions are linked to the quality attributes they address.
+      Targets (e.g. "p99 < 200ms") are stored as data properties on the QA node.
+    subclasses:
+      - name: Performance
+        description: "Response time, throughput, latency."
+        subclasses:
+          - name: Latency
+            description: "Request/response time. e.g. p99 < 100ms."
+          - name: Throughput
+            description: "Transactions per second, messages per second."
+      - name: Scalability
+        description: "Ability to handle growing load — horizontal or vertical."
+        subclasses:
+          - name: HorizontalScalability
+            description: "Scale by adding more instances."
+          - name: VerticalScalability
+            description: "Scale by increasing resource size."
+      - name: Reliability
+        description: "Consistent correct operation under expected conditions."
+        subclasses:
+          - name: FaultTolerance
+            description: "System continues operating when components fail."
+          - name: Recoverability
+            description: "Speed and completeness of recovery after failure."
+      - name: Availability
+        description: "Percentage of time the system is operational."
+        notes: "e.g. 99.99% availability = < 52 minutes downtime/year."
+      - name: Security
+        description: "Confidentiality, integrity, and availability of data and services."
+        subclasses:
+          - name: AuthenticationSecurity
+            description: "Who can access the system."
+          - name: AuthorisationSecurity
+            description: "What authenticated users are allowed to do."
+          - name: DataPrivacy
+            description: "Protection of personal and sensitive data."
+          - name: AuditAndNonRepudiation
+            description: "Ability to prove what happened and who did it."
+      - name: Maintainability
+        description: "Ease of changing, extending, and operating the system over time."
+        subclasses:
+          - name: Testability
+            description: "Ease of writing and running automated tests."
+          - name: Deployability
+            description: "Ease and safety of deploying changes to production."
+          - name: Modifiability
+            description: "Ease of making changes to requirements or design."
+      - name: Observability
+        description: "Ability to understand internal system state from external outputs."
+        subclasses:
+          - name: Logging
+            description: "Structured, searchable log output."
+          - name: Metrics
+            description: "Quantitative measurements of system behaviour."
+          - name: Tracing
+            description: "Distributed request tracing across service boundaries."
+      - name: Portability
+        description: "Ability to run in different environments or migrate to new platforms."
+      - name: Interoperability
+        description: "Ability to exchange data and work with other systems."
+      - name: CostEfficiency
+        description: "Efficient use of compute, storage, and licensing resources."
+        notes: "Often in tension with Performance and Availability."
+      - name: Compliance
+        description: "Adherence to regulatory or policy requirements."
+        notes: >
+          Distinct from the Compliance class in GOV. Here it is a quality attribute
+          (a property to optimise); in GOV it is the framework being complied with.
+
+  - name: TechnologyChoice
+    description: >
+      A specific technology selected for use within the organisation or a system.
+      Ranges from programming languages to cloud services to frameworks.
+    notes: >
+      TechnologyChoice nodes represent the *approved vocabulary* of technologies.
+      They are referenced by Component nodes (usedBy) and categorised (categorisedAs).
+    subclasses:
+      - name: ApprovedTechnology
+        description: "On the technology radar 'Adopt' or 'Trial' ring — approved for use."
+        subclasses:
+          - name: TechnologyStandard
+            description: >
+              Organisational standard — mandated for a specific use case.
+              Example: 'PostgreSQL is the standard for transactional OLTP.'
+      - name: AssessingTechnology
+        description: "On the 'Assess' ring — being evaluated, not yet approved for production."
+      - name: HoldTechnology
+        description: "On the 'Hold' ring — do not adopt for new projects."
+      - name: DeprecatedTechnology
+        description: "Technology being phased out — existing usage must migrate."
+        notes: "A DeprecatedTechnology must have a replacedBy edge pointing to its replacement."
+
+  - name: TechnologyCategory
+    description: "A category of technology — used to classify TechnologyChoice nodes."
+    notes: >
+      Instances (not subclasses): Language, Framework, Database, Messaging, CDN,
+      ObservabilityTool, AuthProvider, CITool, InfrastructureTool, MLFramework, etc.
+      These are enumerated here rather than as subclasses to avoid class proliferation.
+    # Not further subclassed — instances are the values:
+    # e.g. TechnologyCategory nodes: "Language", "Web Framework", "Message Broker",
+    # "Relational Database", "CI/CD Tool", "ML Framework", "Observability", "Auth Provider"
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 2. OBJECT PROPERTIES
+# ─────────────────────────────────────────────────────────────────────────────
+
+object_properties:
+
+  - name: addressesQuality
+    description: "A Decision or Pattern addresses / targets a QualityAttribute."
+    domain: [ArchitecturalDecision, ArchitecturePattern]
+    range: [QualityAttribute]
+    notes: >
+      This is the key relationship linking *why* (the quality goal) to *how*
+      (the pattern or decision). Enables: "What quality attributes drove our
+      event-driven architecture decision?"
+
+  - name: followsPattern
+    description: "A System or Component follows / applies an ArchitecturePattern."
+    domain: [System, Component]
+    range: [ArchitecturePattern]
+    notes: >
+      Cross-module reference: System and Component defined in SYS.
+      A system can follow multiple patterns (e.g. Microservices + EventDriven + CQRS).
+
+  - name: madeBy
+    description: "An ArchitecturalDecision was made by a Person."
+    domain: [ArchitecturalDecision]
+    range: [Person]   # Person defined in ORG
+
+  - name: affects
+    description: "An ArchitecturalDecision affects a System or Component."
+    domain: [ArchitecturalDecision]
+    range: [System, Component]
+    notes: >
+      Enables: "Which decisions affect the Payment Service?"
+      Multiple components can be affected by one decision.
+
+  - name: supersedes
+    description: "An ArchitecturalDecision supersedes / replaces an older decision."
+    domain: [ArchitecturalDecision]
+    range: [ArchitecturalDecision]
+    owl_axioms:
+      - anti_symmetric: true
+
+  - name: usedBy
+    description: "A TechnologyChoice is used by a System or Component."
+    domain: [TechnologyChoice]
+    range: [System, Component]
+    notes: >
+      Inverse query: "Which systems use PostgreSQL?"
+      MATCH (t:TechnologyChoice {name:'PostgreSQL'})<-[:USED_BY]-(s:System) RETURN s
+
+  - name: categorisedAs
+    description: "A TechnologyChoice belongs to a TechnologyCategory."
+    domain: [TechnologyChoice]
+    range: [TechnologyCategory]
+
+  - name: replacedBy
+    description: "A DeprecatedTechnology is being replaced by this TechnologyChoice."
+    domain: [DeprecatedTechnology]
+    range: [TechnologyChoice]
+
+  - name: antiPatternOf
+    description: "This pattern is an anti-pattern relative to the given context."
+    domain: [ArchitecturePattern]
+    range: [ArchitecturePattern]
+    notes: >
+      Example: SharedDatabase is an antiPatternOf DatabasePerService.
+      Useful for answering: "Which of our systems are using known anti-patterns?"
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 3. DATA PROPERTIES
+# ─────────────────────────────────────────────────────────────────────────────
+
+data_properties:
+
+  # ── ArchitecturalDecision properties ────────────────────────────────────
+
+  - name: decisionStatus
+    domain: [ArchitecturalDecision]
+    type: string
+    enum:
+      - proposed
+      - accepted
+      - rejected
+      - deprecated      # Was accepted, now replaced by a newer decision
+      - superseded      # Explicitly replaced by a newer ADR
+    constraints: [NOT NULL]
+    example: "accepted"
+    notes: >
+      Status transitions are one-directional (rule R8):
+      proposed → accepted | rejected
+      accepted → deprecated | superseded
+
+  - name: decisionDate
+    domain: [ArchitecturalDecision]
+    type: date
+    example: "2024-03-15"
+
+  - name: context
+    domain: [ArchitecturalDecision]
+    type: string
+    example: "We need to handle async order processing at scale..."
+
+  - name: decision
+    domain: [ArchitecturalDecision]
+    type: string
+    constraints: [NOT NULL]
+    example: "We will use Kafka as our event streaming platform for all order events."
+
+  - name: rationale
+    domain: [ArchitecturalDecision]
+    type: string
+    example: "Kafka provides guaranteed ordering, high throughput, and replay capability..."
+
+  - name: consequences
+    domain: [ArchitecturalDecision]
+    type: string
+    example: "All teams must adopt Kafka clients. Adds operational complexity..."
+
+  - name: optionsConsidered
+    domain: [ArchitecturalDecision]
+    type: list[string]
+    example: ["Kafka", "RabbitMQ", "AWS SQS/SNS"]
+
+  # ── ArchitecturePattern properties ──────────────────────────────────────
+
+  - name: patternCategory
+    domain: [ArchitecturePattern]
+    type: string
+    enum:
+      - structural
+      - integration
+      - data
+      - infrastructure
+      - application
+    example: "integration"
+
+  - name: isAntiPattern
+    domain: [ArchitecturePattern]
+    type: boolean
+    example: false
+    notes: "Set to true for patterns that are recorded because they are being used but are not recommended."
+
+  - name: tradeoffs
+    domain: [ArchitecturePattern]
+    type: string
+    example: "High throughput + decoupling vs. increased operational complexity and eventual consistency."
+
+  # ── QualityAttribute properties ──────────────────────────────────────────
+
+  - name: targetValue
+    domain: [QualityAttribute]
+    type: string
+    example: "p99 < 200ms"
+    notes: "The measurable target for this quality attribute on a specific system."
+
+  - name: measurementMethod
+    domain: [QualityAttribute]
+    type: string
+    example: "APM traces via Datadog — p99 latency dashboard."
+
+  - name: currentValue
+    domain: [QualityAttribute]
+    type: string
+    example: "p99 = 180ms (as of 2025-03)"
+    notes: "Actual measured value — updated by monitoring integrations."
+
+  # ── TechnologyChoice properties ──────────────────────────────────────────
+
+  - name: vendor
+    domain: [TechnologyChoice]
+    type: string
+    example: "Confluent"
+
+  - name: licenceType
+    domain: [TechnologyChoice]
+    type: string
+    enum:
+      - open-source
+      - commercial
+      - proprietary
+      - freemium
+      - source-available
+    example: "open-source"
+
+  - name: maturityLevel
+    domain: [TechnologyChoice]
+    type: string
+    enum:
+      - emerging    # Technology radar: Assess ring
+      - trial       # Technology radar: Trial ring
+      - adopted     # Technology radar: Adopt ring
+      - hold        # Technology radar: Hold ring
+      - deprecated  # Being phased out
+    example: "adopted"
+
+  - name: endOfSupportDate
+    domain: [TechnologyChoice]
+    type: date
+    example: "2027-12-31"
+    notes: "For commercial or LTS versions — when vendor support ends."
+
+  - name: approvedForEnvironments
+    domain: [TechnologyChoice]
+    type: list[string]
+    example: ["prod", "staging", "dev"]
+    notes: "Some technologies are approved in dev/staging only (e.g. localstack)."
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 4. NEO4J CONSTRAINTS
+# ─────────────────────────────────────────────────────────────────────────────
+
+constraints:
+  - id: C1
+    type: existence
+    label: ArchitecturalDecision
+    property: decisionStatus
+    cypher: "CREATE CONSTRAINT decision_status IF NOT EXISTS FOR (n:ArchitecturalDecision) REQUIRE n.decisionStatus IS NOT NULL"
+
+  - id: C2
+    type: existence
+    label: ArchitecturalDecision
+    property: decision
+    cypher: "CREATE CONSTRAINT decision_text IF NOT EXISTS FOR (n:ArchitecturalDecision) REQUIRE n.decision IS NOT NULL"
+
+  - id: C3
+    type: application_layer
+    description: >
+      An accepted ArchitecturalDecision must have at least one addressesQuality relationship.
+    validation: >
+      MATCH (d:ArchitecturalDecision {decisionStatus: 'accepted'})
+      WHERE NOT EXISTS { (d)-[:ADDRESSES_QUALITY]->(:QualityAttribute) }
+      RETURN d.name AS decisionMissingQualityLink
+
+  - id: C4
+    type: application_layer
+    description: "A DeprecatedTechnology must have a replacedBy relationship."
+    validation: >
+      MATCH (t:DeprecatedTechnology)
+      WHERE NOT EXISTS { (t)-[:REPLACED_BY]->(:TechnologyChoice) }
+      RETURN t.name AS orphanedDeprecation
+
+  - id: I1
+    type: fulltext_index
+    labels: [ArchitecturalDecision]
+    properties: [decision, rationale, context]
+    cypher: "CREATE FULLTEXT INDEX decision_search IF NOT EXISTS FOR (n:ArchitecturalDecision) ON EACH [n.decision, n.rationale, n.context]"
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 5. OPEN QUESTIONS
+# ─────────────────────────────────────────────────────────────────────────────
+
+open_questions:
+  - id: OQ-DEC-1
+    question: >
+      CQRS appears as both a DataPattern and an ApplicationPattern.
+      Should we have two separate nodes, one in each category, or a single
+      CQRS node with patternCategory as a list?
+    options:
+      - "Two separate nodes (DataCQRS, ApplicationCQRS) — cleaner class hierarchy"
+      - "Single node with patternCategory: ['data', 'application'] — simpler"
+    recommended: "Single node with list — CQRS is one pattern that spans both"
+    status: open
+
+  - id: OQ-DEC-2
+    question: >
+      Should TechnologyCategory be a class with instances (nodes in the graph)
+      or just an enum string property on TechnologyChoice?
+    options:
+      - "Class with instances — enables queries like 'show me all approved database technologies'"
+      - "String enum — simpler, no extra nodes"
+    recommended: "Class with instances — the graph query value is worth the extra nodes"
+    status: open
+
+  - id: OQ-DEC-3
+    question: >
+      Should QualityAttribute targets (e.g. 'p99 < 200ms') be on the QualityAttribute
+      node itself, or on the ADDRESSES_QUALITY relationship between the Decision and the QA?
+    options:
+      - "On the QA node (targetValue property) — one target per QA"
+      - "On the relationship — different decisions/systems can have different targets for the same QA"
+    recommended: "On the relationship — a QA node like 'Latency' is shared across systems, each with its own target"
+    status: open
+
+  - id: OQ-DEC-4
+    question: >
+      Do we need an explicit 'Principle' class separate from ArchitecturalDecision?
+      E.g. "API-first", "Privacy by design", "Shift-left security."
+    options:
+      - "Yes — Principle is more durable and abstract than an ADR"
+      - "No — use PrinciplesADR subclass of ArchitectureDecisionRecord"
+    status: open

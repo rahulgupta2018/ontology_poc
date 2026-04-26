@@ -1,0 +1,544 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# MODULE: System & Platform Ontology (SYS)
+# Namespace: #sys
+# Purpose: Captures all technical systems, components, databases, messaging,
+#          APIs, and infrastructure. Answers: what systems exist, how they
+#          are composed, what depends on what, where they run.
+#
+# Cross-module references:
+#   → ORG: Component/System ownedBy Team
+#   → ART: Component/System documentsSystem (reverse)
+#   → GOV: Component implementsCapability, belongsToDomain
+# ─────────────────────────────────────────────────────────────────────────────
+
+module:
+  id: SYS
+  name: System & Platform Ontology
+  namespace: "http://acme.org/ontology#sys"
+  version: "0.1-draft"
+  status: draft
+  notes: >
+    The most frequently extended module — new services, databases, and infra
+    components are added regularly. Classes here should be stable (add instances,
+    not new types). New component types should be proposed via OntologyChangeRequest
+    (GOV module) before being added here.
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 1. CLASS HIERARCHY
+# ─────────────────────────────────────────────────────────────────────────────
+
+classes:
+
+  - name: System
+    description: >
+      A complete, named software system or product — the unit of ownership
+      at the team level. A System is composed of one or more Components.
+    notes: >
+      Systems are the top of the SYS hierarchy. A system maps to a team (ownedBy)
+      and to a business domain (belongsToDomain in GOV).
+      Open question: is a System always a single deployable, or can it be a
+      logical grouping of microservices? Recommend: logical grouping is fine.
+    subclasses:
+      - name: InternalSystem
+        description: "System built and operated by the organisation."
+        subclasses:
+          - name: CoreBankingSystem
+            description: "Mission-critical banking system (e.g. core ledger, payment processor)."
+          - name: SupportingSystem
+            description: "Internal tooling / supporting systems (HR, finance, dev tooling)."
+
+      - name: ExternalSystem
+        description: "Third-party / vendor system the org integrates with."
+        notes: >
+          Model third-party systems as ExternalSystem so queries can filter
+          on what we own vs what we integrate with.
+        subclasses:
+          - name: SaaSPlatform
+            description: "SaaS product integrated via API (e.g. Salesforce, Twilio, Stripe)."
+          - name: OpenBankingProvider
+            description: "Open Banking / third-party provider under PSD2 / CDR."
+
+  - name: Component
+    description: >
+      A deployable or logical unit within a System. The primary modelling
+      unit for architecture diagrams.
+    abstract: true
+    subclasses:
+
+      - name: Service
+        description: "A network-addressable runtime component exposing an interface."
+        subclasses:
+
+          - name: Microservice
+            description: "Fine-grained, independently deployable service with a bounded context."
+
+          - name: MacroService
+            description: >
+              Larger service owning multiple bounded contexts — typically a
+              transitional state on the way to full decomposition, or where
+              splitting is not yet justified.
+
+          - name: BackendForFrontend
+            description: >
+              BFF — an API aggregator tailored to one client type (mobile BFF,
+              web BFF). Wraps downstream services to reduce client complexity.
+            notes: "Pattern is especially common in retail banking channel architectures."
+
+          - name: AsyncWorker
+            description: >
+              Background worker that consumes events or jobs from a queue/broker
+              and processes them without exposing a synchronous API.
+
+          - name: APIGateway
+            description: >
+              Entry-point service that handles routing, authentication, rate limiting,
+              and protocol translation for downstream services.
+            notes: >
+              Open question: is APIGateway a Service subclass or Infrastructure?
+              Current choice: Service (because it has business logic — auth, routing rules).
+              Could move to Infrastructure if we treat it purely as a network primitive.
+
+      - name: Library
+        description: "A reusable code package — consumed at build time, not a runtime process."
+        subclasses:
+          - name: SDK
+            description: "External-facing SDK distributed to third parties or internal consumers."
+          - name: InternalLibrary
+            description: "Shared internal library (e.g. common auth utils, logging framework)."
+          - name: NPMPackage
+            description: "JavaScript/TypeScript package published to internal or public NPM."
+            notes: "Separate from SDK to distinguish JS ecosystem packages."
+
+      - name: Database
+        description: "A data storage component — managed or self-hosted."
+        subclasses:
+          - name: RelationalDatabase
+            description: "SQL database (PostgreSQL, MySQL, Oracle, MSSQL)."
+          - name: DocumentDatabase
+            description: "Document-oriented NoSQL store (MongoDB, DynamoDB, Firestore, CosmosDB)."
+          - name: GraphDatabase
+            description: "Graph-native store (Neo4j, Neptune, TigerGraph)."
+          - name: CacheDatabase
+            description: "In-memory cache or key-value store (Redis, Memcached)."
+          - name: TimeSeriesDatabase
+            description: "Optimised for time-stamped data (InfluxDB, TimescaleDB, Prometheus)."
+          - name: SearchIndex
+            description: "Full-text / vector search index (Elasticsearch, OpenSearch, Meilisearch)."
+          - name: DataWarehouse
+            description: >
+              Analytical / OLAP store (Snowflake, BigQuery, Redshift, Synapse).
+            notes: "Separate from OLTP databases — different ownership, access patterns, SLAs."
+          - name: ObjectStore
+            description: "Binary object / blob storage (S3, GCS, Azure Blob, MinIO)."
+
+      - name: MessageBroker
+        description: "Async messaging infrastructure for event-driven communication."
+        subclasses:
+          - name: StreamingPlatform
+            description: "High-throughput ordered log (Kafka, Kinesis, Pulsar)."
+          - name: MessageQueue
+            description: "Point-to-point or pub/sub queue (SQS, RabbitMQ, Azure Service Bus)."
+          - name: EventBus
+            description: "Lightweight in-process or cross-service event bus (EventBridge, SNS)."
+
+      - name: Frontend
+        description: "User interface component."
+        subclasses:
+          - name: WebApplication
+            description: "Browser-based UI (SPA, SSR, MPA)."
+            subclasses:
+              - name: SinglePageApplication
+                description: "React / Angular / Vue SPA."
+              - name: ServerSideRendered
+                description: "Next.js, Nuxt, traditional SSR app."
+          - name: MobileApplication
+            description: "Native or hybrid mobile app."
+            subclasses:
+              - name: iOSApplication
+                description: "Swift / Objective-C native app."
+              - name: AndroidApplication
+                description: "Kotlin / Java native app."
+              - name: CrossPlatformApp
+                description: "React Native, Flutter, Ionic."
+          - name: DesktopApplication
+            description: "Electron or native desktop app."
+
+      - name: BatchJob
+        description: >
+          Scheduled or event-triggered batch processing component.
+          Not a long-running service — runs to completion.
+        notes: >
+          Examples: nightly reconciliation job, monthly statement generator,
+          data migration script run on a schedule.
+
+      - name: WorkflowEngine
+        description: >
+          Orchestrates multi-step, long-running processes with state management.
+          Examples: Temporal, Camunda, AWS Step Functions, Azure Durable Functions.
+
+      - name: MLModel
+        description: >
+          A deployed machine learning model or inference endpoint.
+        notes: >
+          Open question: should MLModel be a Component subclass or a separate
+          top-level class? Current choice: Component — it is a deployable unit
+          that other services depend on.
+
+  - name: Infrastructure
+    description: "Physical or cloud infrastructure on which Components run."
+    abstract: true
+    subclasses:
+
+      - name: CloudProvider
+        description: "Public cloud (AWS, Azure, GCP, OCI)."
+
+      - name: ContainerOrchestrator
+        description: >
+          Platform that schedules and manages containers
+          (Kubernetes, ECS, Nomad, OpenShift).
+        subclasses:
+          - name: KubernetesCluster
+            description: "A specific Kubernetes cluster — may be named (e.g. prod-eu-k8s-01)."
+
+      - name: CDN
+        description: "Content delivery network (CloudFront, Fastly, Akamai, Azure CDN)."
+
+      - name: LoadBalancer
+        description: "Traffic routing / load balancing layer (ALB, NLB, HAProxy, nginx)."
+
+      - name: NetworkZone
+        description: "Network boundary — VPC, subnet, DMZ, private link."
+        subclasses:
+          - name: VPC
+            description: "Virtual Private Cloud on a cloud provider."
+          - name: DMZ
+            description: "Demilitarised zone — public-facing network segment."
+
+      - name: ServiceMesh
+        description: >
+          Sidecar-based mTLS and traffic management layer
+          (Istio, Linkerd, Consul Connect).
+
+      - name: ObservabilityPlatform
+        description: >
+          Centralised logging, metrics, and tracing platform
+          (Datadog, Splunk, Dynatrace, Grafana stack).
+        notes: >
+          Open question: is ObservabilityPlatform Infrastructure or a separate
+          top-level class? It's not a component we build, but it's more than
+          generic infrastructure. Current choice: Infrastructure — it's a
+          platform service components are deployed onto / emit data to.
+
+      - name: CIPlatform
+        description: "CI/CD pipeline platform (GitHub Actions, Jenkins, ArgoCD, Tekton)."
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 2. OBJECT PROPERTIES
+# ─────────────────────────────────────────────────────────────────────────────
+
+object_properties:
+
+  - name: belongsTo
+    description: "A Component is part of a System."
+    domain: [Component]
+    range: [System]
+    inverse_of: composedOf
+
+  - name: composedOf
+    description: "A System is composed of one or more Components."
+    domain: [System]
+    range: [Component]
+    inverse_of: belongsTo
+
+  - name: dependsOn
+    description: "Component A has a runtime or compile-time dependency on Component B."
+    domain: [Component]
+    range: [Component]
+    owl_axioms:
+      - transitive: true      # A→B→C implies A transitively dependsOn C
+    notes: >
+      Transitivity enables full dependency tree queries:
+      MATCH path = (a:Component)-[:DEPENDS_ON*]->(b:Component) RETURN path
+      Be cautious: transitive closure on large graphs can be expensive.
+      Consider caching transitive dependency sets for critical components.
+
+  - name: exposesAPI
+    description: "A Service exposes an API (REST, gRPC, GraphQL, event schema)."
+    domain: [Service]
+    range: [Component]
+
+  - name: consumesAPI
+    description: "A Component consumes an API from a Service."
+    domain: [Component]
+    range: [Service]
+
+  - name: storesDataIn
+    description: "A Service stores its primary data in a Database."
+    domain: [Service]
+    range: [Database]
+    notes: >
+      A Service can storesDataIn multiple databases (e.g. PostgreSQL for
+      transactional data + Redis for session cache). All are captured.
+
+  - name: publishesTo
+    description: "A Service publishes events to a MessageBroker."
+    domain: [Service, BatchJob]
+    range: [MessageBroker]
+
+  - name: subscribesTo
+    description: "A Service or Worker subscribes to events from a MessageBroker."
+    domain: [Service, AsyncWorker, BatchJob]
+    range: [MessageBroker]
+
+  - name: deployedOn
+    description: "A Component is deployed on an Infrastructure element."
+    domain: [Component]
+    range: [Infrastructure]
+
+  - name: hostedOn
+    description: "A System is hosted on a cloud provider or infrastructure environment."
+    domain: [System]
+    range: [Infrastructure]
+
+  - name: ownedBy
+    description: "A Component or System is accountable to a Team. (Inverse of ORG.owns)"
+    domain: [Component, System]
+    range: [Team]
+    inverse_of: owns   # owns is defined in ORG module
+    notes: >
+      Cross-module reference: Team is defined in ORG.
+      Every Component should have exactly one ownedBy (see constraint C4 in ORG).
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 3. DATA PROPERTIES
+# ─────────────────────────────────────────────────────────────────────────────
+
+data_properties:
+
+  # ── System properties ────────────────────────────────────────────────────
+
+  - name: systemId
+    domain: [System]
+    type: string
+    constraints: [UNIQUE]
+    example: "SYS-001"
+    notes: "Stable identifier. Do not reuse after a system is decommissioned."
+
+  - name: systemStatus
+    domain: [System]
+    type: string
+    enum:
+      - active
+      - deprecated          # Still running, but targeted for decommission
+      - decommissioned      # No longer running
+      - in-development      # Not yet in production
+      - dr-standby          # Disaster recovery standby
+    constraints: [NOT NULL]
+    example: "active"
+
+  - name: tier
+    domain: [System]
+    type: string
+    enum:
+      - critical            # Tier 1 — outage = business-stopping
+      - standard            # Tier 2 — outage = significant customer impact
+      - low                 # Tier 3 — outage = minor/internal impact
+    example: "critical"
+    notes: "Drives SLA, on-call rotation, recovery time objectives."
+
+  - name: classification
+    domain: [System, Component]
+    type: string
+    enum:
+      - public
+      - internal
+      - restricted
+      - confidential
+    example: "internal"
+    notes: "Data classification — flows through from the system to its components."
+
+  # ── Component properties ─────────────────────────────────────────────────
+
+  - name: componentStatus
+    domain: [Component]
+    type: string
+    enum:
+      - active
+      - deprecated
+      - decommissioned
+      - experimental
+    constraints: [NOT NULL]
+    example: "active"
+
+  - name: version
+    domain: [Component]
+    type: string
+    example: "2.3.1"
+
+  - name: language
+    domain: [Component]
+    type: string
+    example: "Python"
+
+  - name: framework
+    domain: [Component]
+    type: string
+    example: "FastAPI"
+
+  - name: repositoryUrl
+    domain: [Component]
+    type: string
+    example: "https://github.com/acme/order-svc"
+
+  - name: hasEndpoint
+    domain: [Service]
+    type: string
+    example: "https://api.acme.com/orders/v2"
+
+  - name: healthCheckUrl
+    domain: [Service]
+    type: string
+    example: "https://api.acme.com/orders/v2/health"
+
+  - name: slaTarget
+    domain: [Service]
+    type: string
+    example: "99.9%"
+    notes: "Availability SLA target. Links to QualityAttribute in DEC module."
+
+  # ── Database properties ──────────────────────────────────────────────────
+
+  - name: dbEngine
+    domain: [Database]
+    type: string
+    example: "PostgreSQL 16"
+
+  - name: hostingType
+    domain: [Database]
+    type: string
+    enum:
+      - managed             # Cloud-managed (RDS, Atlas, Cloud SQL)
+      - self-hosted         # Run by our team on VMs or K8s
+    example: "managed"
+
+  - name: retentionDays
+    domain: [Database]
+    type: integer
+    example: 365
+    notes: "Data retention period in days. Linked to regulatory constraints (GOV)."
+
+  # ── Infrastructure properties ────────────────────────────────────────────
+
+  - name: provider
+    domain: [Infrastructure]
+    type: string
+    example: "AWS"
+
+  - name: region
+    domain: [Infrastructure]
+    type: string
+    example: "eu-west-1"
+
+  - name: environment
+    domain: [Infrastructure]
+    type: string
+    enum:
+      - prod
+      - staging
+      - dev
+      - dr              # Disaster recovery
+      - sandbox
+    example: "prod"
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 4. NEO4J CONSTRAINTS
+# ─────────────────────────────────────────────────────────────────────────────
+
+constraints:
+  - id: C1
+    type: uniqueness
+    label: System
+    property: systemId
+    cypher: "CREATE CONSTRAINT system_id IF NOT EXISTS FOR (n:System) REQUIRE n.systemId IS UNIQUE"
+
+  - id: C2
+    type: existence
+    label: Component
+    property: name
+    cypher: "CREATE CONSTRAINT component_name IF NOT EXISTS FOR (n:Component) REQUIRE n.name IS NOT NULL"
+
+  - id: C3
+    type: existence
+    label: System
+    property: systemStatus
+    cypher: "CREATE CONSTRAINT system_status IF NOT EXISTS FOR (n:System) REQUIRE n.systemStatus IS NOT NULL"
+
+  - id: C4
+    type: application_layer
+    description: "A DeprecatedComponent must have a replacedBy relationship."
+    validation: >
+      MATCH (c:Component {componentStatus:'deprecated'})
+      WHERE NOT EXISTS { (c)-[:REPLACED_BY]->(:Component) }
+      RETURN c.name AS unlinkedDeprecation
+
+  - id: I1
+    type: index
+    label: Component
+    property: name
+    cypher: "CREATE INDEX component_name_idx IF NOT EXISTS FOR (n:Component) ON (n.name)"
+
+  - id: I2
+    type: fulltext_index
+    labels: [System, Component]
+    properties: [name, description]
+    cypher: "CREATE FULLTEXT INDEX sys_search IF NOT EXISTS FOR (n:System|Component) ON EACH [n.name, n.description]"
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 5. OPEN QUESTIONS
+# ─────────────────────────────────────────────────────────────────────────────
+
+open_questions:
+  - id: OQ-SYS-1
+    question: "Is APIGateway a Service subclass or Infrastructure?"
+    options:
+      - "Service — it has routing/auth business logic"
+      - "Infrastructure — it's a platform primitive like a load balancer"
+    recommended: "Service — because teams configure and own gateway routing rules"
+    status: open
+
+  - id: OQ-SYS-2
+    question: "Should MLModel be a Component subclass or its own top-level class?"
+    options:
+      - "Component subclass — it's a deployable unit like a Service"
+      - "Separate class — it has unique lifecycle (training, versioning, drift monitoring)"
+    status: open
+
+  - id: OQ-SYS-3
+    question: "How do we model API contracts? As a property of Service, or a node in ART?"
+    options:
+      - "Property: Service.apiContractUrl (simple, no separate node)"
+      - "ART node: APIContract Document linked to Service via exposesAPI (richer, queryable)"
+    recommended: "ART node — enables queries like 'show me all services without an OpenAPI contract'"
+    status: open
+
+  - id: OQ-SYS-4
+    question: "Do we model DataPipeline / ETL jobs as a Component subclass?"
+    options:
+      - "Yes — add DataPipeline under BatchJob or as its own class"
+      - "No — BatchJob is sufficient; use tags for pipeline-specific metadata"
+    status: open
+
+  - id: OQ-SYS-5
+    question: >
+      How deep does the Infrastructure hierarchy go? Do we model individual
+      K8s namespaces, EC2 instances, specific S3 buckets?
+    options:
+      - "Platform level only (KubernetesCluster, VPC) — sufficient for architecture views"
+      - "Instance level — needed for security/compliance queries"
+    recommended: "Platform level for now — add instance level in a GOV/SYS extension later"
+    status: open

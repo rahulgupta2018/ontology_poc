@@ -1,0 +1,463 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# MODULE: Architecture Artefact Ontology (ART)
+# Namespace: #art
+# Purpose: Captures all architecture documents and their metadata. Every piece
+#          of knowledge extracted from a document is linked back to its source
+#          Document node (provenance). Answers: what documents exist, who wrote
+#          them, what do they describe, which supersedes which.
+#
+# Cross-module references:
+#   → SYS: Document documentsSystem / documentsComponent
+#   → ORG: Document authoredBy / approvedBy (Person)
+#   → DEC: ArchitectureDecisionRecord extends both ART and DEC
+# ─────────────────────────────────────────────────────────────────────────────
+
+module:
+  id: ART
+  name: Architecture Artefact Ontology
+  namespace: "http://acme.org/ontology#art"
+  version: "0.1-draft"
+  status: draft
+  notes: >
+    This module is the provenance layer. Every fact in the graph was either
+    manually loaded or extracted from a Document. The extractedFrom relationship
+    (defined here) links graph knowledge back to its source artefact.
+    Documents are not deleted — they are superseded or archived. This gives
+    us a full audit trail of architectural knowledge over time.
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 1. CLASS HIERARCHY
+# ─────────────────────────────────────────────────────────────────────────────
+
+classes:
+
+  - name: Document
+    description: >
+      Root class for all architecture artefacts. A Document node is created
+      when a document is first ingested, even before extraction is complete.
+    abstract: true
+    notes: >
+      Key design choice: Document is abstract — every document must be a specific
+      subclass (HLD, LLD, ADR, etc.). This allows targeted queries and
+      ensures the documentType is captured structurally, not just as a string.
+    subclasses:
+
+      - name: HighLevelDesign
+        description: >
+          System-level architecture document. Describes the overall structure,
+          key components, integration patterns, and quality attribute targets.
+          Audience: architects, senior engineers, product leads.
+        notes: >
+          HLDs are the most common document type we'll ingest. They map to
+          System and Component nodes in SYS, Pattern nodes in DEC, and
+          QualityAttribute targets.
+
+      - name: LowLevelDesign
+        description: >
+          Component-level detailed design. API specs, data models, sequence
+          diagrams, error handling. Audience: engineers implementing the feature.
+        notes: >
+          LLDs are often written per-feature rather than per-system. They
+          reference specific Component and Database nodes from SYS.
+
+      - name: ArchitectureDecisionRecord
+        description: >
+          A documented architecture decision capturing context, options considered,
+          decision made, and consequences. Also extends DEC module's ArchitecturalDecision.
+        notes: >
+          ADRs are dual-labelled in Neo4j: (:ADR:Document:ArchitecturalDecision).
+          The Document attributes (sourceUrl, approvedBy, effectiveDate) come from ART.
+          The decision attributes (decisionStatus, rationale, consequences) come from DEC.
+          This is the only class that spans two modules.
+        subclasses:
+          - name: TechnicalADR
+            description: "ADR for a specific technical decision within a system or component."
+          - name: PrinciplesADR
+            description: "ADR that establishes a cross-cutting architectural principle."
+          - name: StandardsADR
+            description: "ADR that mandates a technology or practice as an organisational standard."
+
+      - name: RequestForComments
+        description: >
+          A proposal document seeking feedback before a decision is made.
+          The predecessor to an ADR. Status transitions: draft → in-review → accepted/rejected.
+        notes: >
+          If an RFC is accepted, it typically results in an ADR.
+          Link: (adr:ADR)-[:SUPERSEDES_DOCUMENT]->(rfc:RFC)
+
+      - name: RunBook
+        description: >
+          Operational runbook or playbook. Describes how to operate, diagnose,
+          and recover a system. Audience: on-call engineers.
+        notes: >
+          RunBooks are operational documents — they don't describe the system's
+          design but describe how to run it. Include them to answer:
+          "Is there a runbook for this service?"
+
+      - name: TechnologyRadar
+        description: >
+          Organisation-level technology radar or standards register.
+          Classifies technologies as: adopt / trial / assess / hold.
+        notes: >
+          A Technology Radar document contains TechnologyChoice nodes (DEC module).
+          ingestion extracts TechnologyChoice → categorisedAs TechnologyCategory.
+
+      - name: RiskRegister
+        description: >
+          A consolidated document listing identified risks, likelihood, impact,
+          and mitigations for a system or domain.
+        notes: >
+          A Risk Register document contains Risk nodes (GOV module).
+          Ingestion extracts Risk nodes and mitigates relationships.
+
+      - name: Standard
+        description: "An organisational standard or policy document."
+        subclasses:
+          - name: TechnologyStandard
+            description: >
+              Defines approved/prohibited technologies (e.g. approved database list,
+              banned open-source licences).
+          - name: CodingStandard
+            description: "Coding conventions, style guides, linting rules."
+          - name: SecurityStandard
+            description: >
+              Security requirements that systems must comply with
+              (e.g. authentication standards, encryption requirements).
+          - name: DataStandard
+            description: >
+              Data management standards — naming conventions, schema governance,
+              PII handling rules.
+
+      - name: PatternCatalogue
+        description: >
+          A curated catalogue of approved architecture patterns for the organisation.
+          References Pattern nodes in DEC module.
+
+      - name: DataModel
+        description: >
+          Logical or physical data model documentation for a system or domain.
+          Describes entities, attributes, relationships, and constraints.
+        subclasses:
+          - name: LogicalDataModel
+            description: "Entity-relationship model, business entity definitions."
+          - name: PhysicalDataModel
+            description: "Database schema, table definitions, index strategies."
+
+      - name: APIContract
+        description: >
+          Machine-readable or human-readable API contract.
+          Formats: OpenAPI / Swagger, AsyncAPI (event schemas), GraphQL schema.
+        notes: >
+          APIContract nodes are linked to the Service that exposes them via exposesAPI.
+          Enables queries like: "Show me all services that don't have an OpenAPI contract."
+        subclasses:
+          - name: OpenAPIContract
+            description: "REST API spec in OpenAPI 3.x / Swagger 2.x format."
+          - name: AsyncAPIContract
+            description: "Event / message schema in AsyncAPI format."
+          - name: GraphQLSchema
+            description: "GraphQL schema definition."
+
+      - name: SecurityReview
+        description: >
+          Security design review, threat model, or penetration test report for a system.
+        subclasses:
+          - name: ThreatModel
+            description: "STRIDE or similar threat model for a system or component."
+          - name: PenTestReport
+            description: "Penetration testing report."
+          - name: DesignSecurityReview
+            description: "Architectural security review — typically done at HLD stage."
+
+      - name: ArchitectureReviewBoard
+        description: >
+          Record of an Architecture Review Board (ARB) session — decisions made,
+          systems reviewed, attendees.
+        notes: >
+          Captures the governance process itself. Enables: "Show me all ARB decisions
+          affecting the Payments system in the last year."
+
+      - name: CapacityPlan
+        description: >
+          Capacity planning document — projected load, scaling strategy,
+          infrastructure requirements.
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 2. OBJECT PROPERTIES
+# ─────────────────────────────────────────────────────────────────────────────
+
+object_properties:
+
+  - name: supersedesDocument
+    description: "This Document replaces an older version of the same document."
+    domain: [Document]
+    range: [Document]
+    owl_axioms:
+      - anti_symmetric: true    # If A supersedes B, B cannot supersede A
+    notes: >
+      When a new HLD v2 is ingested, it supersedesDocument HLD v1.
+      The old document is archived (documentStatus = 'superseded'), not deleted.
+      This gives us a temporal history of architectural thinking.
+
+  - name: authoredBy
+    description: "The primary author(s) of the document."
+    domain: [Document]
+    range: [Person]   # Person defined in ORG module
+    notes: "A document can have multiple authors."
+
+  - name: approvedBy
+    description: "The person or role who approved this document."
+    domain: [Document]
+    range: [Person]
+    notes: "For ADRs, this is typically the Architecture Review Board lead."
+
+  - name: reviewedBy
+    description: "Persons who reviewed this document (but may not have approved it)."
+    domain: [Document]
+    range: [Person]
+
+  - name: documentsSystem
+    description: "This document describes a System."
+    domain: [Document]
+    range: [System]   # System defined in SYS module
+
+  - name: documentsComponent
+    description: "This document describes a specific Component."
+    domain: [Document]
+    range: [Component]  # Component defined in SYS module
+
+  - name: relatesTo
+    description: "Cross-reference between related documents."
+    domain: [Document]
+    range: [Document]
+    owl_axioms:
+      - symmetric: true    # If A relatesTo B, then B relatesTo A
+
+  - name: extractedFrom
+    description: >
+      Links a knowledge node (Component, ADR, Risk, Pattern, etc.) back to the
+      Document it was extracted from. The primary provenance relationship.
+    domain: [ArchitecturalConcept]   # Any node in the graph
+    range: [Document]
+    notes: >
+      Relationship properties (on the edge, not the node):
+        confidence: float (0.0–1.0) — LLM extraction confidence
+        chunk: integer — which document chunk this was extracted from
+        extractedAt: datetime — when the extraction happened
+        extractedBy: string — which model/version did the extraction
+      Example: (OrderService)-[:EXTRACTED_FROM {confidence: 0.92, chunk: 3}]->(hld_v2)
+
+  - name: containsDecision
+    description: "This document contains (or resulted in) an ArchitecturalDecision."
+    domain: [Document]
+    range: [ArchitecturalDecision]   # ArchitecturalDecision defined in DEC module
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 3. DATA PROPERTIES
+# ─────────────────────────────────────────────────────────────────────────────
+
+data_properties:
+
+  - name: documentType
+    domain: [Document]
+    type: string
+    enum:
+      - HLD
+      - LLD
+      - ADR
+      - RFC
+      - RunBook
+      - TechnologyRadar
+      - RiskRegister
+      - Standard
+      - PatternCatalogue
+      - DataModel
+      - APIContract
+      - SecurityReview
+      - ARBRecord
+      - CapacityPlan
+    constraints: [NOT NULL]
+    example: "HLD"
+    notes: "Redundant with the class subtype, but useful for filtering without knowing the label."
+
+  - name: documentStatus
+    domain: [Document]
+    type: string
+    enum:
+      - draft             # Being written, not yet shared
+      - in-review         # Under review (RFC stage or ARB review)
+      - approved          # Formally approved / accepted
+      - superseded        # Replaced by a newer version — kept for history
+      - archived          # No longer active, kept for reference
+      - rejected          # Proposal was rejected (RFC / ADR)
+    constraints: [NOT NULL]
+    example: "approved"
+    notes: >
+      Status transitions are governed (rule R1): approved docs cannot be deleted.
+      They must be superseded first.
+
+  - name: title
+    domain: [Document]
+    type: string
+    constraints: [NOT NULL]
+    example: "Order Domain High Level Design v2"
+
+  - name: version
+    domain: [Document]
+    type: string
+    example: "2.1"
+
+  - name: effectiveDate
+    domain: [Document]
+    type: date
+    example: "2024-06-01"
+    notes: "The date the document became active / was approved."
+
+  - name: expiryDate
+    domain: [Document]
+    type: date
+    example: "2025-06-01"
+    notes: >
+      Optional review / expiry date. Standards and technology radars typically
+      have a review cycle. A background job flags documents past expiry.
+
+  - name: sourceUrl
+    domain: [Document]
+    type: string
+    constraints: [UNIQUE]
+    example: "https://confluence.acme.com/display/PAY/Order+Domain+HLD+v2"
+    notes: "Canonical link to the source document. Used as the deduplication key."
+
+  - name: confidentiality
+    domain: [Document]
+    type: string
+    enum:
+      - public
+      - internal
+      - restricted
+      - confidential
+    example: "internal"
+    notes: >
+      Controls visibility in the Q&A interface. Restricted / confidential
+      documents require role-based filtering at the application layer.
+
+  - name: tags
+    domain: [Document]
+    type: list[string]
+    example: ["payments", "kafka", "migration", "phase-2"]
+    notes: "Free-text tags for flexible categorisation without schema changes."
+
+  - name: ingestionStatus
+    domain: [Document]
+    type: string
+    enum:
+      - pending
+      - in-progress
+      - complete
+      - failed
+      - partial           # Some chunks ingested, some failed
+    example: "complete"
+
+  - name: lastIngestedAt
+    domain: [Document]
+    type: datetime
+    example: "2025-04-01T09:00:00Z"
+
+  - name: chunkCount
+    domain: [Document]
+    type: integer
+    example: 14
+    notes: "Number of text chunks this document was split into during ingestion."
+
+  - name: wordCount
+    domain: [Document]
+    type: integer
+    example: 3200
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 4. NEO4J CONSTRAINTS
+# ─────────────────────────────────────────────────────────────────────────────
+
+constraints:
+  - id: C1
+    type: uniqueness
+    label: Document
+    property: sourceUrl
+    cypher: "CREATE CONSTRAINT doc_url IF NOT EXISTS FOR (n:Document) REQUIRE n.sourceUrl IS UNIQUE"
+
+  - id: C2
+    type: existence
+    label: Document
+    property: documentType
+    cypher: "CREATE CONSTRAINT doc_type IF NOT EXISTS FOR (n:Document) REQUIRE n.documentType IS NOT NULL"
+
+  - id: C3
+    type: existence
+    label: Document
+    property: documentStatus
+    cypher: "CREATE CONSTRAINT doc_status IF NOT EXISTS FOR (n:Document) REQUIRE n.documentStatus IS NOT NULL"
+
+  - id: C4
+    type: application_layer
+    description: "An approved Document cannot be deleted — only superseded."
+    validation: "Enforced in ingestion pipeline DELETE handler."
+
+  - id: I1
+    type: index
+    label: Document
+    property: documentStatus
+    cypher: "CREATE INDEX doc_status_idx IF NOT EXISTS FOR (n:Document) ON (n.documentStatus)"
+
+  - id: I2
+    type: fulltext_index
+    labels: [Document]
+    properties: [title, tags]
+    cypher: "CREATE FULLTEXT INDEX doc_search IF NOT EXISTS FOR (n:Document) ON EACH [n.title, n.tags]"
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 5. OPEN QUESTIONS
+# ─────────────────────────────────────────────────────────────────────────────
+
+open_questions:
+  - id: OQ-ART-1
+    question: >
+      Should Document be abstract (requiring a specific subclass) or concrete
+      (allowing a generic Document node with documentType as a string)?
+    options:
+      - "Abstract — forces correct classification, enables label-based queries"
+      - "Concrete with string documentType — simpler, handles unknown doc types gracefully"
+    recommended: "Abstract — we can always add a new subclass; UnresolvedDocument for unknowns"
+    status: open
+
+  - id: OQ-ART-2
+    question: >
+      How do we handle documents with no sourceUrl (e.g. a document that only
+      exists as a PDF attachment, not on Confluence)?
+    options:
+      - "Generate a hash-based synthetic URL (sha256 of content)"
+      - "Use a local file path as the sourceUrl"
+      - "Make sourceUrl optional, use title + effectiveDate as dedup key"
+    status: open
+
+  - id: OQ-ART-3
+    question: "Should ArchitectureReviewBoard (ARB) records be in ART or GOV?"
+    options:
+      - "ART — it's a document produced by a governance process"
+      - "GOV — it is the governance process itself"
+    recommended: "ART — the ARB record is an artefact; the governance process is described in GOV"
+    status: open
+
+  - id: OQ-ART-4
+    question: >
+      Do we capture individual document chunks as nodes, or just the parent Document?
+    options:
+      - "Parent Document only — simpler, lower node count"
+      - "Chunk nodes linked to Document — enables precise provenance (which paragraph?)"
+      - "Chunks as properties on Document (array) — middle ground"
+    recommended: "Parent Document only for now; add chunk nodes in Phase 5 when we add embeddings"
+    status: open

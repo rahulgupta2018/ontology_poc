@@ -1,0 +1,29 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# ORG SEED DATA: Retail Banking
+# Schema: ontology/modules/org.yaml
+# Hierarchy: Division → Platform → Lab → Team
+# ─────────────────────────────────────────────────────────────────────────────
+
+division:
+  name: "Retail Banking"
+  code: "RETAIL"
+  description: "Serves personal and retail banking customers."
+
+  platforms:
+    # Add Retail platforms here following the same structure as org_bcb.yaml
+    # Example:
+    # - name: "Personal Banking"
+    #   code: "RETAIL-PB"
+    #   description: "..."
+    #   labs:
+    #     - name: "Current Accounts"
+    #       code: "RETAIL-PB-CA"
+    #       teams:
+    #         - name: "Team A"
+    #           code: "RETAIL-PB-CA-A"
+    #           teamType: stream-aligned
+    #           slackChannel: "#retail-ca-team-a"
+    #           contactEmail: "retail-ca-a@acme.com"
+
+  direct_teams: []
+    # Add division-level enabling teams here

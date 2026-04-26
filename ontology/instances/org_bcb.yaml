@@ -1,0 +1,121 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# ORG SEED DATA: Business & Commercial Banking (BCB)
+# Schema: ontology/modules/org.yaml
+# Hierarchy: Division → Platform → Lab → Team
+#
+# HOW TO EDIT:
+#   - Add platforms under this division by adding to the `platforms:` list
+#   - Add labs under a platform by adding to that platform's `labs:` list
+#   - Add teams under a lab by adding to that lab's `teams:` list
+#   - Enabling teams (e.g. architecture) with no lab should use the
+#     `direct_teams:` key on the platform or division (see example below)
+#   - teamType values: stream-aligned | platform | enabling | complicated-subsystem
+# ─────────────────────────────────────────────────────────────────────────────
+
+division:
+  name: "Business & Commercial Banking"
+  code: "BCB"
+  description: "Serves business and commercial banking customers."
+
+  platforms:
+
+    - name: "Client Servicing & Engagement"
+      code: "BCB-CSE"
+      description: "Owns all client-facing servicing and engagement products for BCB."
+      labs:
+
+        - name: "Payments & Transactions"
+          code: "BCB-CSE-PnT"
+          description: "Payments initiation, transaction history, and payment rails."
+          teams:
+            - name: "Team A"
+              code: "BCB-CSE-PnT-A"
+              teamType: stream-aligned
+              slackChannel: "#bcb-pnt-team-a"
+              contactEmail: "bcb-pnt-a@acme.com"
+            - name: "Team B"
+              code: "BCB-CSE-PnT-B"
+              teamType: stream-aligned
+              slackChannel: "#bcb-pnt-team-b"
+              contactEmail: "bcb-pnt-b@acme.com"
+            # Add more teams here
+
+        - name: "Digital Servicing"
+          code: "BCB-CSE-DS"
+          description: "Digital channel servicing — online banking, mobile, notifications."
+          teams:
+            - name: "Team A"
+              code: "BCB-CSE-DS-A"
+              teamType: stream-aligned
+              slackChannel: "#bcb-ds-team-a"
+              contactEmail: "bcb-ds-a@acme.com"
+            # Add more teams here
+
+        - name: "Accounts Servicing"
+          code: "BCB-CSE-ACC"
+          description: "Account opening, maintenance, and lifecycle management."
+          teams:
+            - name: "Team A"
+              code: "BCB-CSE-ACC-A"
+              teamType: stream-aligned
+              slackChannel: "#bcb-acc-team-a"
+              contactEmail: "bcb-acc-a@acme.com"
+            # Add more teams here
+
+        # Add more labs here
+
+    - name: "Commercial Lending"
+      code: "BCB-LEND"
+      description: "Commercial loan origination, decisioning, and servicing."
+      labs:
+        - name: "Loan Origination"
+          code: "BCB-LEND-ORIG"
+          description: "End-to-end commercial loan application and decisioning."
+          teams:
+            - name: "Team A"
+              code: "BCB-LEND-ORIG-A"
+              teamType: stream-aligned
+              slackChannel: "#bcb-lend-orig-a"
+              contactEmail: "bcb-lend-orig-a@acme.com"
+            # Add more teams here
+
+        - name: "Loan Servicing"
+          code: "BCB-LEND-SERV"
+          description: "Drawdowns, repayments, covenants, and arrears management."
+          teams:
+            - name: "Team A"
+              code: "BCB-LEND-SERV-A"
+              teamType: stream-aligned
+              slackChannel: "#bcb-lend-serv-a"
+              contactEmail: "bcb-lend-serv-a@acme.com"
+            # Add more teams here
+
+        # Add more labs here
+
+    - name: "Markets"
+      code: "BCB-MKT"
+      description: "FX, rates, and treasury products for commercial clients."
+      labs:
+        - name: "FX & Rates"
+          code: "BCB-MKT-FX"
+          description: "Foreign exchange and interest rate products."
+          teams:
+            - name: "Team A"
+              code: "BCB-MKT-FX-A"
+              teamType: stream-aligned
+              slackChannel: "#bcb-mkt-fx-a"
+              contactEmail: "bcb-mkt-fx-a@acme.com"
+            # Add more teams here
+
+        # Add more labs here
+
+    # Add more platforms here
+
+  # ── Enabling teams that report to the Division/Platform directly (no Lab) ──────────
+  direct_teams:
+    - name: "BCB Architecture"
+      code: "BCB-ARCH"
+      teamType: enabling
+      slackChannel: "#bcb-architecture"
+      contactEmail: "bcb-arch@acme.com"
+      notes: "Solution architects embedded in BCB. partOf BCB Division directly."
