@@ -1,0 +1,611 @@
+<mxGraphModel dx="1920" dy="1080" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3508" pageHeight="2480" math="0" shadow="1">
+  <root>
+    <mxCell id="0" />
+    <mxCell id="1" parent="0" />
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- TITLE BLOCK -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <mxCell id="title" value="Enterprise Architecture Knowledge Graph" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=28;fontStyle=1;fontColor=#1A237E;" vertex="1" parent="1">
+      <mxGeometry x="800" y="30" width="1900" height="44" as="geometry" />
+    </mxCell>
+    <mxCell id="subtitle" value="Production Architecture on Google Cloud Platform  |  Ontology-First Knowledge Graph  |  GraphRAG + LLM Pipeline" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontColor=#455A64;" vertex="1" parent="1">
+      <mxGeometry x="800" y="76" width="1900" height="24" as="geometry" />
+    </mxCell>
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- LEGEND -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <mxCell id="legend_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8F9FA;strokeColor=#9E9E9E;strokeWidth=1;" vertex="1" parent="1">
+      <mxGeometry x="60" y="110" width="220" height="230" as="geometry" />
+    </mxCell>
+    <mxCell id="legend_title" value="Legend" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontStyle=1;fontSize=11;fontColor=#37474F;" vertex="1" parent="1">
+      <mxGeometry x="80" y="118" width="100" height="20" as="geometry" />
+    </mxCell>
+    <mxCell id="leg1" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;strokeWidth=2;" vertex="1" parent="1">
+      <mxGeometry x="80" y="146" width="22" height="16" as="geometry" />
+    </mxCell>
+    <mxCell id="leg1t" value="GCP Managed Service" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=10;fontColor=#37474F;" vertex="1" parent="1">
+      <mxGeometry x="110" y="144" width="160" height="20" as="geometry" />
+    </mxCell>
+    <mxCell id="leg2" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;strokeWidth=2;" vertex="1" parent="1">
+      <mxGeometry x="80" y="172" width="22" height="16" as="geometry" />
+    </mxCell>
+    <mxCell id="leg2t" value="Application Layer" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=10;fontColor=#37474F;" vertex="1" parent="1">
+      <mxGeometry x="110" y="170" width="160" height="20" as="geometry" />
+    </mxCell>
+    <mxCell id="leg3" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#E65100;strokeWidth=2;" vertex="1" parent="1">
+      <mxGeometry x="80" y="198" width="22" height="16" as="geometry" />
+    </mxCell>
+    <mxCell id="leg3t" value="AI / LLM Pipeline" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=10;fontColor=#37474F;" vertex="1" parent="1">
+      <mxGeometry x="110" y="196" width="160" height="20" as="geometry" />
+    </mxCell>
+    <mxCell id="leg4" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#6A1B9A;strokeWidth=2;" vertex="1" parent="1">
+      <mxGeometry x="80" y="224" width="22" height="16" as="geometry" />
+    </mxCell>
+    <mxCell id="leg4t" value="Ontology / Schema" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=10;fontColor=#37474F;" vertex="1" parent="1">
+      <mxGeometry x="110" y="222" width="160" height="20" as="geometry" />
+    </mxCell>
+    <mxCell id="leg5" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FCE4EC;strokeColor=#880E4F;strokeWidth=2;" vertex="1" parent="1">
+      <mxGeometry x="80" y="250" width="22" height="16" as="geometry" />
+    </mxCell>
+    <mxCell id="leg5t" value="Security / IAM" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=10;fontColor=#37474F;" vertex="1" parent="1">
+      <mxGeometry x="110" y="248" width="160" height="20" as="geometry" />
+    </mxCell>
+    <mxCell id="leg6" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2F1;strokeColor=#00695C;strokeWidth=2;" vertex="1" parent="1">
+      <mxGeometry x="80" y="276" width="22" height="16" as="geometry" />
+    </mxCell>
+    <mxCell id="leg6t" value="Observability" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=10;fontColor=#37474F;" vertex="1" parent="1">
+      <mxGeometry x="110" y="274" width="160" height="20" as="geometry" />
+    </mxCell>
+    <mxCell id="leg7" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF9C4;strokeColor=#F57F17;strokeWidth=2;" vertex="1" parent="1">
+      <mxGeometry x="80" y="302" width="22" height="16" as="geometry" />
+    </mxCell>
+    <mxCell id="leg7t" value="Source Connectors" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=10;fontColor=#37474F;" vertex="1" parent="1">
+      <mxGeometry x="110" y="300" width="160" height="20" as="geometry" />
+    </mxCell>
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- LANE 0: CLIENT / CONSUMERS -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <mxCell id="lane0_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#B0BEC5;strokeWidth=2;opacity=40;" vertex="1" parent="1">
+      <mxGeometry x="310" y="110" width="3178" height="120" as="geometry" />
+    </mxCell>
+    <mxCell id="lane0_label" value="CONSUMERS" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontStyle=1;fontSize=11;fontColor=#546E7A;rotation=-90;" vertex="1" parent="1">
+      <mxGeometry x="296" y="170" width="100" height="20" as="geometry" />
+    </mxCell>
+
+    <!-- Architect user -->
+    <mxCell id="user_arch" value="👤&#xa;Architect / Engineer" style="shape=mxgraph.gcp2.user;html=1;whiteSpace=wrap;fillColor=#ECEFF1;strokeColor=#607D8B;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="360" y="130" width="70" height="80" as="geometry" />
+    </mxCell>
+    <!-- API user -->
+    <mxCell id="user_api" value="🤖&#xa;CI/CD Pipeline&#xa;/ External App" style="shape=mxgraph.gcp2.user;html=1;whiteSpace=wrap;fillColor=#ECEFF1;strokeColor=#607D8B;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="480" y="130" width="70" height="80" as="geometry" />
+    </mxCell>
+
+    <!-- Confluence -->
+    <mxCell id="src_confluence" value="Confluence" style="shape=image;html=1;verticalLabelPosition=bottom;verticalAlign=top;imageAlign=center;image=img/lib/atlassian/confluence.svg;fillColor=#FFF9C4;strokeColor=#F57F17;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="650" y="133" width="60" height="60" as="geometry" />
+    </mxCell>
+    <!-- SharePoint -->
+    <mxCell id="src_sharepoint" value="SharePoint" style="shape=image;html=1;verticalLabelPosition=bottom;verticalAlign=top;imageAlign=center;image=img/lib/microsoft/sharepoint.svg;fillColor=#FFF9C4;strokeColor=#F57F17;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="760" y="133" width="60" height="60" as="geometry" />
+    </mxCell>
+    <!-- GitHub -->
+    <mxCell id="src_github" value="GitHub&#xa;(ADR / Markdown)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF9C4;strokeColor=#F57F17;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="870" y="143" width="110" height="40" as="geometry" />
+    </mxCell>
+    <!-- PDF / DOCX -->
+    <mxCell id="src_pdf" value="PDF / DOCX&#xa;Upload" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF9C4;strokeColor=#F57F17;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="1000" y="143" width="100" height="40" as="geometry" />
+    </mxCell>
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- LANE 1: GCP — EDGE / API LAYER -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <mxCell id="lane1_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;strokeWidth=2;opacity=30;" vertex="1" parent="1">
+      <mxGeometry x="310" y="250" width="3178" height="200" as="geometry" />
+    </mxCell>
+    <mxCell id="lane1_label" value="GCP  —  EDGE &amp; API LAYER" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontStyle=1;fontSize=11;fontColor=#2E7D32;rotation=-90;" vertex="1" parent="1">
+      <mxGeometry x="290" y="370" width="180" height="20" as="geometry" />
+    </mxCell>
+
+    <!-- Cloud Armor -->
+    <mxCell id="gcp_armor" value="☁ Cloud Armor&#xa;WAF / DDoS" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FCE4EC;strokeColor=#880E4F;strokeWidth=2;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="360" y="280" width="130" height="50" as="geometry" />
+    </mxCell>
+    <!-- Cloud Load Balancer -->
+    <mxCell id="gcp_lb" value="☁ Cloud Load Balancer&#xa;(Global HTTPS LB)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;strokeWidth=2;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="530" y="280" width="160" height="50" as="geometry" />
+    </mxCell>
+    <!-- Cloud CDN -->
+    <mxCell id="gcp_cdn" value="☁ Cloud CDN&#xa;(Static UI assets)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;strokeWidth=2;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="530" y="360" width="160" height="50" as="geometry" />
+    </mxCell>
+    <!-- API Gateway -->
+    <mxCell id="gcp_apigw" value="☁ Apigee API Gateway&#xa;Auth · Rate-limit · Routing" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;strokeWidth=2;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="730" y="280" width="190" height="50" as="geometry" />
+    </mxCell>
+    <!-- Cloud Identity -->
+    <mxCell id="gcp_identity" value="☁ Cloud Identity&#xa;+ IAP&#xa;(OIDC / OAuth2)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FCE4EC;strokeColor=#880E4F;strokeWidth=2;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="730" y="355" width="190" height="60" as="geometry" />
+    </mxCell>
+    <!-- Cloud Run — Chat UI -->
+    <mxCell id="gcp_chatui" value="☁ Cloud Run&#xa;Chat Web UI&#xa;(FastAPI + SSE)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;strokeWidth=2;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="970" y="270" width="150" height="60" as="geometry" />
+    </mxCell>
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- LANE 2: APPLICATION SERVICES (GKE) -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <mxCell id="lane2_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;strokeWidth=2;opacity=30;" vertex="1" parent="1">
+      <mxGeometry x="310" y="470" width="3178" height="310" as="geometry" />
+    </mxCell>
+    <mxCell id="lane2_label" value="GKE AUTOPILOT  —  APPLICATION SERVICES" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontStyle=1;fontSize=11;fontColor=#1565C0;rotation=-90;" vertex="1" parent="1">
+      <mxGeometry x="283" y="640" width="260" height="20" as="geometry" />
+    </mxCell>
+
+    <!-- GKE cluster box -->
+    <mxCell id="gke_box" value="Google Kubernetes Engine (GKE Autopilot)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#1565C0;strokeWidth=2;fontSize=11;fontStyle=1;verticalAlign=top;dashed=1;" vertex="1" parent="1">
+      <mxGeometry x="340" y="490" width="2100" height="270" as="geometry" />
+    </mxCell>
+
+    <!-- Q&A API Service -->
+    <mxCell id="svc_qa" value="Q&amp;A API Service&#xa;(FastAPI)&#xa;NL → Cypher → Answer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;strokeWidth=2;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="380" y="540" width="160" height="70" as="geometry" />
+    </mxCell>
+    <!-- Ingestion Orchestrator -->
+    <mxCell id="svc_ingest" value="Ingestion Orchestrator&#xa;(FastAPI + Celery)&#xa;Doc intake · Validation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;strokeWidth=2;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="580" y="540" width="170" height="70" as="geometry" />
+    </mxCell>
+    <!-- Ontology Service -->
+    <mxCell id="svc_onto" value="Ontology Service&#xa;(Python / owlready2)&#xa;Schema · Validation · SHACL" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#6A1B9A;strokeWidth=2;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="790" y="540" width="180" height="70" as="geometry" />
+    </mxCell>
+    <!-- Entity Extraction Worker -->
+    <mxCell id="svc_extract" value="Entity Extraction Worker&#xa;(LangChain + Vertex AI)&#xa;Structured output → graph" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#E65100;strokeWidth=2;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="1010" y="540" width="190" height="70" as="geometry" />
+    </mxCell>
+    <!-- Embedding Worker -->
+    <mxCell id="svc_embed" value="Embedding Worker&#xa;(text-embedding-004)&#xa;Chunk → Vector" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#E65100;strokeWidth=2;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="1240" y="540" width="170" height="70" as="geometry" />
+    </mxCell>
+    <!-- Ontology Change Mgr -->
+    <mxCell id="svc_gov" value="Governance Service&#xa;OntologyChangeRequest&#xa;UnresolvedConcept queue" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#6A1B9A;strokeWidth=2;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="1450" y="540" width="180" height="70" as="geometry" />
+    </mxCell>
+    <!-- Instance Loader -->
+    <mxCell id="svc_loader" value="Instance Loader&#xa;(load_org_instances.py)&#xa;ABox YAML → Neo4j" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;strokeWidth=2;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="1670" y="540" width="170" height="70" as="geometry" />
+    </mxCell>
+    <!-- Connector Workers -->
+    <mxCell id="svc_conn" value="Source Connector Workers&#xa;Confluence · SharePoint&#xa;GitHub · PDF/DOCX" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF9C4;strokeColor=#F57F17;strokeWidth=2;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="1880" y="540" width="180" height="70" as="geometry" />
+    </mxCell>
+
+    <!-- Cypher Generator -->
+    <mxCell id="svc_cypher" value="Cypher Generator&#xa;(LLM prompt template)&#xa;Schema-aware NL→Cypher" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#E65100;strokeWidth=2;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="380" y="660" width="160" height="70" as="geometry" />
+    </mxCell>
+    <!-- Document Parser -->
+    <mxCell id="svc_parser" value="Document Parser&#xa;pypdf · python-docx&#xa;markdownify" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;strokeWidth=2;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="580" y="660" width="170" height="70" as="geometry" />
+    </mxCell>
+    <!-- Dedup / Merge -->
+    <mxCell id="svc_dedup" value="Dedup / Merge Engine&#xa;Fuzzy name matching&#xa;0.85 auto · 0.5 review" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;strokeWidth=2;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="790" y="660" width="180" height="70" as="geometry" />
+    </mxCell>
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- LANE 3: AI / LLM (Vertex AI) -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <mxCell id="lane3_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#E65100;strokeWidth=2;opacity=30;" vertex="1" parent="1">
+      <mxGeometry x="310" y="800" width="3178" height="220" as="geometry" />
+    </mxCell>
+    <mxCell id="lane3_label" value="VERTEX AI  —  AI / LLM PLATFORM" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontStyle=1;fontSize=11;fontColor=#E65100;rotation=-90;" vertex="1" parent="1">
+      <mxGeometry x="283" y="925" width="240" height="20" as="geometry" />
+    </mxCell>
+
+    <!-- Vertex AI Gemini -->
+    <mxCell id="ai_gemini" value="☁ Vertex AI&#xa;Gemini 1.5 Pro&#xa;Entity extraction · Q&amp;A · Classification" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#E65100;strokeWidth=2;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="380" y="830" width="210" height="70" as="geometry" />
+    </mxCell>
+    <!-- Vertex AI Embeddings -->
+    <mxCell id="ai_embed" value="☁ Vertex AI&#xa;text-embedding-004&#xa;Semantic chunk vectors" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#E65100;strokeWidth=2;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="640" y="830" width="210" height="70" as="geometry" />
+    </mxCell>
+    <!-- Vertex AI Pipelines -->
+    <mxCell id="ai_pipelines" value="☁ Vertex AI Pipelines&#xa;Scheduled ingestion runs&#xa;Model eval &amp; versioning" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#E65100;strokeWidth=2;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="900" y="830" width="210" height="70" as="geometry" />
+    </mxCell>
+    <!-- Prompt Registry -->
+    <mxCell id="ai_prompt" value="Prompt Registry&#xa;(Cloud Storage bucket)&#xa;Versioned prompt templates" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#E65100;strokeWidth=2;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="1160" y="830" width="200" height="70" as="geometry" />
+    </mxCell>
+
+    <!-- RAG Agent -->
+    <mxCell id="ai_rag" value="GraphRAG Agent&#xa;Cypher + Vector hybrid retrieval&#xa;Answer synthesis + citation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#E65100;strokeWidth=2;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="380" y="930" width="210" height="70" as="geometry" />
+    </mxCell>
+    <!-- Ontology mapper -->
+    <mxCell id="ai_mapper" value="Ontology Class Mapper&#xa;LLM → structured class label&#xa;confidence score filter" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#E65100;strokeWidth=2;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="640" y="930" width="210" height="70" as="geometry" />
+    </mxCell>
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- LANE 4: DATA STORES -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <mxCell id="lane4_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;strokeWidth=2;opacity=30;" vertex="1" parent="1">
+      <mxGeometry x="310" y="1040" width="3178" height="310" as="geometry" />
+    </mxCell>
+    <mxCell id="lane4_label" value="GCP  —  DATA &amp; STORAGE LAYER" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontStyle=1;fontSize=11;fontColor=#2E7D32;rotation=-90;" vertex="1" parent="1">
+      <mxGeometry x="283" y="1210" width="230" height="20" as="geometry" />
+    </mxCell>
+
+    <!-- Neo4j on GKE / Aura -->
+    <mxCell id="db_neo4j_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#1B5E20;strokeWidth=3;opacity=60;" vertex="1" parent="1">
+      <mxGeometry x="340" y="1060" width="560" height="270" as="geometry" />
+    </mxCell>
+    <mxCell id="db_neo4j_title" value="Neo4j AuraDB Enterprise&#xa;(Primary Knowledge Graph Store)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;fontStyle=1;fontSize=11;fontColor=#1B5E20;" vertex="1" parent="1">
+      <mxGeometry x="350" y="1065" width="540" height="35" as="geometry" />
+    </mxCell>
+    <!-- Neo4j TBox -->
+    <mxCell id="db_tbox" value="TBox (Schema)&#xa;5 Ontology Modules&#xa;ORG · SYS · ART · DEC · GOV" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#6A1B9A;strokeWidth=2;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="360" y="1110" width="180" height="80" as="geometry" />
+    </mxCell>
+    <!-- Neo4j ABox -->
+    <mxCell id="db_abox" value="ABox (Instances)&#xa;Division · Platform · Lab&#xa;Team · System · ADR · Risk" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;strokeWidth=2;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="560" y="1110" width="180" height="80" as="geometry" />
+    </mxCell>
+    <!-- Neo4j Vector Index -->
+    <mxCell id="db_vector" value="Neo4j Vector Index&#xa;(node embedding vectors)&#xa;Semantic similarity search" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;strokeWidth=2;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="360" y="1210" width="180" height="80" as="geometry" />
+    </mxCell>
+    <!-- Cypher Constraints -->
+    <mxCell id="db_constraints" value="Schema Constraints&#xa;Uniqueness · NOT NULL&#xa;Performance Indexes" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;strokeWidth=2;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="560" y="1210" width="180" height="80" as="geometry" />
+    </mxCell>
+
+    <!-- Cloud Storage -->
+    <mxCell id="db_gcs" value="☁ Cloud Storage&#xa;Raw documents (GCS bucket)&#xa;PDF · DOCX · Markdown" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;strokeWidth=2;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="950" y="1080" width="180" height="80" as="geometry" />
+    </mxCell>
+    <!-- Cloud Firestore -->
+    <mxCell id="db_firestore" value="☁ Cloud Firestore&#xa;Session state · Chat history&#xa;Review queue UI state" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;strokeWidth=2;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="950" y="1190" width="180" height="80" as="geometry" />
+    </mxCell>
+    <!-- Cloud Memorystore -->
+    <mxCell id="db_redis" value="☁ Memorystore (Redis)&#xa;Q&amp;A response cache&#xa;Embedding cache" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;strokeWidth=2;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="950" y="1290" width="180" height="70" as="geometry" />
+    </mxCell>
+    <!-- Pub/Sub -->
+    <mxCell id="db_pubsub" value="☁ Cloud Pub/Sub&#xa;Ingestion event bus&#xa;async document pipeline" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;strokeWidth=2;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="1180" y="1080" width="180" height="80" as="geometry" />
+    </mxCell>
+    <!-- Cloud Tasks -->
+    <mxCell id="db_tasks" value="☁ Cloud Tasks&#xa;Chunking · embedding&#xa;extraction job queue" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;strokeWidth=2;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="1180" y="1190" width="180" height="80" as="geometry" />
+    </mxCell>
+    <!-- Cloud SQL -->
+    <mxCell id="db_sql" value="☁ Cloud SQL (PostgreSQL)&#xa;Audit log · OCR metadata&#xa;Ingestion run history" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;strokeWidth=2;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="1180" y="1290" width="180" height="70" as="geometry" />
+    </mxCell>
+    <!-- Secret Manager -->
+    <mxCell id="db_secrets" value="☁ Secret Manager&#xa;API keys · DB credentials&#xa;Service account tokens" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FCE4EC;strokeColor=#880E4F;strokeWidth=2;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="1410" y="1080" width="180" height="80" as="geometry" />
+    </mxCell>
+    <!-- Cloud KMS -->
+    <mxCell id="db_kms" value="☁ Cloud KMS&#xa;Encryption at rest (CMEK)&#xa;Key rotation policy" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FCE4EC;strokeColor=#880E4F;strokeWidth=2;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="1410" y="1190" width="180" height="80" as="geometry" />
+    </mxCell>
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- LANE 5: ONTOLOGY MODULES (detail) -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <mxCell id="lane5_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#6A1B9A;strokeWidth=2;opacity=30;" vertex="1" parent="1">
+      <mxGeometry x="310" y="1370" width="3178" height="310" as="geometry" />
+    </mxCell>
+    <mxCell id="lane5_label" value="ONTOLOGY MODULES (TBox Schema)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontStyle=1;fontSize=11;fontColor=#6A1B9A;rotation=-90;" vertex="1" parent="1">
+      <mxGeometry x="283" y="1540" width="230" height="20" as="geometry" />
+    </mxCell>
+
+    <!-- ORG Module -->
+    <mxCell id="mod_org" value="ORG Module&#xa;Organisation Ontology" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#6A1B9A;strokeWidth=2;fontSize=10;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+      <mxGeometry x="340" y="1390" width="490" height="270" as="geometry" />
+    </mxCell>
+    <mxCell id="mod_org_detail" value="Division → Platform → Lab → Team&#xa;(4-level hierarchy, transitive partOf)&#xa;────────────────────────────────&#xa;Classes: OrganisationUnit, Division,&#xa;Platform, Lab, Team (4 subtypes), Person&#xa;────────────────────────────────&#xa;Properties: partOf (transitive), owns,&#xa;ledBy (functional), memberOf, reportsTo&#xa;────────────────────────────────&#xa;ABox: ontology/instances/org_*.yaml" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=9;fontColor=#4A148C;verticalAlign=top;" vertex="1" parent="1">
+      <mxGeometry x="355" y="1428" width="460" height="215" as="geometry" />
+    </mxCell>
+
+    <!-- SYS Module -->
+    <mxCell id="mod_sys" value="SYS Module&#xa;System &amp; Platform Ontology" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#6A1B9A;strokeWidth=2;fontSize=10;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+      <mxGeometry x="850" y="1390" width="450" height="270" as="geometry" />
+    </mxCell>
+    <mxCell id="mod_sys_detail" value="System, Component subtypes:&#xa;Microservice · BFF · Database · MessageBroker&#xa;APIGateway · Frontend · BatchJob&#xa;────────────────────────────────&#xa;Infrastructure: CloudProvider,&#xa;ContainerOrchestrator, ServiceMesh&#xa;────────────────────────────────&#xa;Properties: dependsOn (transitive),&#xa;composedOf, storesDataIn, publishesTo,&#xa;subscribesTo, deployedOn, ownedBy" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=9;fontColor=#4A148C;verticalAlign=top;" vertex="1" parent="1">
+      <mxGeometry x="865" y="1428" width="420" height="215" as="geometry" />
+    </mxCell>
+
+    <!-- ART Module -->
+    <mxCell id="mod_art" value="ART Module&#xa;Architecture Artefact Ontology" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#6A1B9A;strokeWidth=2;fontSize=10;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+      <mxGeometry x="1320" y="1390" width="420" height="270" as="geometry" />
+    </mxCell>
+    <mxCell id="mod_art_detail" value="Document subtypes:&#xa;HLD · LLD · ADR · RFC · RunBook&#xa;TechnologyRadar · RiskRegister&#xa;Standard · APIContract · SecurityReview&#xa;────────────────────────────────&#xa;Properties: supersedesDocument,&#xa;authoredBy, approvedBy, extractedFrom,&#xa;relatesTo (symmetric)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=9;fontColor=#4A148C;verticalAlign=top;" vertex="1" parent="1">
+      <mxGeometry x="1335" y="1428" width="390" height="215" as="geometry" />
+    </mxCell>
+
+    <!-- DEC Module -->
+    <mxCell id="mod_dec" value="DEC Module&#xa;Decision &amp; Pattern Ontology" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#6A1B9A;strokeWidth=2;fontSize=10;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+      <mxGeometry x="1760" y="1390" width="450" height="270" as="geometry" />
+    </mxCell>
+    <mxCell id="mod_dec_detail" value="ArchitecturalDecision → ADR&#xa;ArchitecturePattern: Structural · Integration&#xa;Data · Infrastructure · Application&#xa;QualityAttribute: Scalability · Reliability&#xa;Security · Performance · Observability&#xa;────────────────────────────────&#xa;TechnologyChoice: Approved · Assessing&#xa;Hold · Deprecated&#xa;Properties: supersedes (anti-sym),&#xa;addressesQuality, followsPattern" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=9;fontColor=#4A148C;verticalAlign=top;" vertex="1" parent="1">
+      <mxGeometry x="1775" y="1428" width="420" height="215" as="geometry" />
+    </mxCell>
+
+    <!-- GOV Module -->
+    <mxCell id="mod_gov" value="GOV Module&#xa;Governance &amp; Risk Ontology" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#6A1B9A;strokeWidth=2;fontSize=10;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+      <mxGeometry x="2230" y="1390" width="470" height="270" as="geometry" />
+    </mxCell>
+    <mxCell id="mod_gov_detail" value="Risk: TechnicalRisk · SecurityRisk&#xa;ComplianceRisk · OperationalRisk&#xa;Constraint: Regulatory · Technical · Budget&#xa;Capability: Business · Technical&#xa;Domain, BusinessProcess, Compliance&#xa;SecurityControl (OAuth2 · MFA · WAF)&#xa;────────────────────────────────&#xa;UnresolvedConcept · OntologyChangeRequest&#xa;DataLineage&#xa;Properties: mitigates, satisfies,&#xa;complianceWith, belongsToDomain" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=9;fontColor=#4A148C;verticalAlign=top;" vertex="1" parent="1">
+      <mxGeometry x="2245" y="1428" width="440" height="215" as="geometry" />
+    </mxCell>
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- LANE 6: OBSERVABILITY + CI/CD -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <mxCell id="lane6_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2F1;strokeColor=#00695C;strokeWidth=2;opacity=30;" vertex="1" parent="1">
+      <mxGeometry x="310" y="1700" width="3178" height="160" as="geometry" />
+    </mxCell>
+    <mxCell id="lane6_label" value="OBSERVABILITY &amp; CI/CD" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontStyle=1;fontSize=11;fontColor=#00695C;rotation=-90;" vertex="1" parent="1">
+      <mxGeometry x="283" y="1800" width="200" height="20" as="geometry" />
+    </mxCell>
+
+    <mxCell id="obs_ops" value="☁ Cloud Operations&#xa;Monitoring · Logging&#xa;Error Reporting" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2F1;strokeColor=#00695C;strokeWidth=2;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="360" y="1720" width="160" height="70" as="geometry" />
+    </mxCell>
+    <mxCell id="obs_trace" value="☁ Cloud Trace&#xa;Distributed tracing&#xa;Latency profiling" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2F1;strokeColor=#00695C;strokeWidth=2;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="540" y="1720" width="160" height="70" as="geometry" />
+    </mxCell>
+    <mxCell id="obs_dash" value="☁ Looker Studio&#xa;Data Quality Dashboard&#xa;Orphans · Unresolved · Stale" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2F1;strokeColor=#00695C;strokeWidth=2;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="720" y="1720" width="170" height="70" as="geometry" />
+    </mxCell>
+    <mxCell id="obs_alert" value="☁ Cloud Alerting&#xa;SLO breach · pipeline failure&#xa;Critical risk unmitigated" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2F1;strokeColor=#00695C;strokeWidth=2;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="910" y="1720" width="170" height="70" as="geometry" />
+    </mxCell>
+    <mxCell id="cicd_ar" value="☁ Artifact Registry&#xa;Container images&#xa;Ontology YAML packages" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2F1;strokeColor=#00695C;strokeWidth=2;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="1120" y="1720" width="160" height="70" as="geometry" />
+    </mxCell>
+    <mxCell id="cicd_cb" value="☁ Cloud Build&#xa;CI/CD pipeline&#xa;Ontology schema tests" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2F1;strokeColor=#00695C;strokeWidth=2;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="1300" y="1720" width="160" height="70" as="geometry" />
+    </mxCell>
+    <mxCell id="cicd_tf" value="Terraform / Config Connector&#xa;Infrastructure as Code&#xa;GCP resource provisioning" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2F1;strokeColor=#00695C;strokeWidth=2;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="1480" y="1720" width="180" height="70" as="geometry" />
+    </mxCell>
+    <mxCell id="cicd_iam" value="☁ IAM + Workload Identity&#xa;Service account per workload&#xa;Least-privilege RBAC" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FCE4EC;strokeColor=#880E4F;strokeWidth=2;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="1680" y="1720" width="180" height="70" as="geometry" />
+    </mxCell>
+    <mxCell id="cicd_vpc" value="☁ VPC + Private Service Connect&#xa;All services on private network&#xa;No public IP on data stores" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FCE4EC;strokeColor=#880E4F;strokeWidth=2;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="1880" y="1720" width="190" height="70" as="geometry" />
+    </mxCell>
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- CONNECTIONS -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+
+    <!-- Users → Cloud Armor -->
+    <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#607D8B;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" source="user_arch" target="gcp_armor" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#607D8B;strokeWidth=2;" edge="1" source="user_api" target="gcp_armor" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Sources → Cloud Storage (via Connectors) -->
+    <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#F57F17;strokeWidth=2;dashed=1;" edge="1" source="src_confluence" target="svc_conn" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#F57F17;strokeWidth=2;dashed=1;" edge="1" source="src_sharepoint" target="svc_conn" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#F57F17;strokeWidth=2;dashed=1;" edge="1" source="src_github" target="svc_conn" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#F57F17;strokeWidth=2;dashed=1;" edge="1" source="src_pdf" target="svc_conn" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Armor → LB -->
+    <mxCell id="e7" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2E7D32;strokeWidth=2;" edge="1" source="gcp_armor" target="gcp_lb" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <!-- LB → API GW -->
+    <mxCell id="e8" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2E7D32;strokeWidth=2;" edge="1" source="gcp_lb" target="gcp_apigw" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <!-- LB → Chat UI -->
+    <mxCell id="e8b" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2E7D32;strokeWidth=2;" edge="1" source="gcp_lb" target="gcp_chatui" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <!-- Identity → API GW -->
+    <mxCell id="e9" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#880E4F;strokeWidth=2;dashed=1;" edge="1" source="gcp_identity" target="gcp_apigw" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <!-- API GW → Q&A Service -->
+    <mxCell id="e10" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#1565C0;strokeWidth=2;" edge="1" source="gcp_apigw" target="svc_qa" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <!-- API GW → Ingestion -->
+    <mxCell id="e11" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#1565C0;strokeWidth=2;" edge="1" source="gcp_apigw" target="svc_ingest" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <!-- Chat UI → Q&A -->
+    <mxCell id="e11b" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#1565C0;strokeWidth=2;" edge="1" source="gcp_chatui" target="svc_qa" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Q&A → Cypher Gen -->
+    <mxCell id="e12" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#1565C0;strokeWidth=1.5;" edge="1" source="svc_qa" target="svc_cypher" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <!-- Q&A → Redis -->
+    <mxCell id="e13" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#1565C0;strokeWidth=1.5;dashed=1;" edge="1" source="svc_qa" target="db_redis" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <!-- Cypher Gen → Gemini -->
+    <mxCell id="e14" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#E65100;strokeWidth=2;" edge="1" source="svc_cypher" target="ai_gemini" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <!-- Cypher Gen → Neo4j -->
+    <mxCell id="e15" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#1B5E20;strokeWidth=2;" edge="1" source="svc_cypher" target="db_neo4j_bg" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Ingestion → Parser -->
+    <mxCell id="e16" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#1565C0;strokeWidth=1.5;" edge="1" source="svc_ingest" target="svc_parser" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <!-- Ingestion → Pub/Sub -->
+    <mxCell id="e17" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2E7D32;strokeWidth=2;" edge="1" source="svc_ingest" target="db_pubsub" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <!-- Ingestion → GCS -->
+    <mxCell id="e17b" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2E7D32;strokeWidth=2;" edge="1" source="svc_ingest" target="db_gcs" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <!-- Connectors → Ingestion -->
+    <mxCell id="e17c" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#F57F17;strokeWidth=2;" edge="1" source="svc_conn" target="svc_ingest" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Pub/Sub → Extract Worker -->
+    <mxCell id="e18" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2E7D32;strokeWidth=2;" edge="1" source="db_pubsub" target="svc_extract" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <!-- Pub/Sub → Embed Worker -->
+    <mxCell id="e19" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2E7D32;strokeWidth=2;" edge="1" source="db_pubsub" target="svc_embed" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <!-- Tasks → Extract -->
+    <mxCell id="e20" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2E7D32;strokeWidth=1.5;dashed=1;" edge="1" source="db_tasks" target="svc_extract" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Extract → Gemini -->
+    <mxCell id="e21" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#E65100;strokeWidth=2;" edge="1" source="svc_extract" target="ai_gemini" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <!-- Extract → Mapper -->
+    <mxCell id="e22" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#E65100;strokeWidth=1.5;" edge="1" source="svc_extract" target="ai_mapper" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <!-- Extract → Ontology Svc -->
+    <mxCell id="e23" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#6A1B9A;strokeWidth=2;" edge="1" source="svc_extract" target="svc_onto" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <!-- Mapper → Ontology Svc -->
+    <mxCell id="e24" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#6A1B9A;strokeWidth=1.5;" edge="1" source="ai_mapper" target="svc_onto" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Embed → Vertex Embeddings -->
+    <mxCell id="e25" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#E65100;strokeWidth=2;" edge="1" source="svc_embed" target="ai_embed" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <!-- Embed → Neo4j vector -->
+    <mxCell id="e26" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#1B5E20;strokeWidth=2;" edge="1" source="svc_embed" target="db_vector" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Ontology Svc → Neo4j TBox -->
+    <mxCell id="e27" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#6A1B9A;strokeWidth=2;" edge="1" source="svc_onto" target="db_tbox" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <!-- Ontology Svc → Dedup -->
+    <mxCell id="e28" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#6A1B9A;strokeWidth=1.5;" edge="1" source="svc_onto" target="svc_dedup" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <!-- Ontology Svc → Gov Svc -->
+    <mxCell id="e29" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#6A1B9A;strokeWidth=1.5;" edge="1" source="svc_onto" target="svc_gov" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <!-- Dedup → ABox -->
+    <mxCell id="e30" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#1B5E20;strokeWidth=2;" edge="1" source="svc_dedup" target="db_abox" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <!-- Instance Loader → ABox -->
+    <mxCell id="e31" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#1B5E20;strokeWidth=2;" edge="1" source="svc_loader" target="db_abox" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <!-- Instance Loader → GCS (reads YAML) -->
+    <mxCell id="e31b" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2E7D32;strokeWidth=1.5;dashed=1;" edge="1" source="svc_loader" target="db_gcs" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- RAG → Neo4j (Cypher) -->
+    <mxCell id="e32" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#E65100;strokeWidth=2;" edge="1" source="ai_rag" target="db_neo4j_bg" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <!-- RAG ← Q&A Svc -->
+    <mxCell id="e33" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#E65100;strokeWidth=2;" edge="1" source="svc_qa" target="ai_rag" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <!-- Vertex Pipelines → Pub/Sub -->
+    <mxCell id="e34" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#E65100;strokeWidth=1.5;dashed=1;" edge="1" source="ai_pipelines" target="db_pubsub" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Gov Svc → Firestore -->
+    <mxCell id="e35" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#6A1B9A;strokeWidth=1.5;" edge="1" source="svc_gov" target="db_firestore" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <!-- Gov Svc → SQL (audit log) -->
+    <mxCell id="e36" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#6A1B9A;strokeWidth=1.5;" edge="1" source="svc_gov" target="db_sql" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Neo4j → Observability -->
+    <mxCell id="e37" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#00695C;strokeWidth=1.5;dashed=1;" edge="1" source="db_neo4j_bg" target="obs_dash" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <!-- Services → Cloud Ops -->
+    <mxCell id="e38" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#00695C;strokeWidth=1.5;dashed=1;" edge="1" source="svc_ingest" target="obs_ops" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Modules → TBox label connections (visual) -->
+    <mxCell id="e_mod1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#6A1B9A;strokeWidth=1.5;dashed=1;endArrow=none;" edge="1" source="mod_org" target="db_tbox" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e_mod2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#6A1B9A;strokeWidth=1.5;dashed=1;endArrow=none;" edge="1" source="mod_sys" target="db_tbox" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e_mod3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#6A1B9A;strokeWidth=1.5;dashed=1;endArrow=none;" edge="1" source="mod_art" target="db_tbox" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e_mod4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#6A1B9A;strokeWidth=1.5;dashed=1;endArrow=none;" edge="1" source="mod_dec" target="db_tbox" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e_mod5" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#6A1B9A;strokeWidth=1.5;dashed=1;endArrow=none;" edge="1" source="mod_gov" target="db_tbox" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Secret Manager → services (dashed security) -->
+    <mxCell id="e_sec1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#880E4F;strokeWidth=1.5;dashed=1;endArrow=none;" edge="1" source="db_secrets" target="svc_extract" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e_sec2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#880E4F;strokeWidth=1.5;dashed=1;endArrow=none;" edge="1" source="db_kms" target="db_neo4j_bg" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- CDN → Chat UI (assets) -->
+    <mxCell id="e_cdn" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2E7D32;strokeWidth=1.5;dashed=1;" edge="1" source="gcp_cdn" target="gcp_chatui" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Cloud Build → GKE (deploy) -->
+    <mxCell id="e_cd" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#00695C;strokeWidth=2;dashed=1;" edge="1" source="cicd_cb" target="gke_box" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+  </root>
+</mxGraphModel>
