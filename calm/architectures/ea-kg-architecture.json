@@ -1,0 +1,231 @@
+{
+  "nodes": [
+    {
+      "unique-id": "ontology-modules",
+      "node-type": "service",
+      "name": "Ontology Modules",
+      "description": "[[ DESCRIPTION ]]",
+      "details": {
+        "modules": [
+          "org",
+          "sys",
+          "art",
+          "dec",
+          "gov"
+        ],
+        "format": "YAML + owlready2 Python",
+        "path": "ontology/modules/"
+      }
+    },
+    {
+      "unique-id": "instance-data",
+      "node-type": "datastore",
+      "name": "Instance Data (ABox)",
+      "description": "[[ DESCRIPTION ]]",
+      "details": {
+        "format": "YAML",
+        "path": "ontology/instances/"
+      }
+    },
+    {
+      "unique-id": "ontology-loader",
+      "node-type": "service",
+      "name": "Ontology Loader",
+      "description": "[[ DESCRIPTION ]]",
+      "details": {
+        "path": "ingestion/load_ontology.py",
+        "language": "Python 3.12",
+        "runs-validation-rules": [
+          "R1",
+          "R2",
+          "R3",
+          "R4",
+          "R5",
+          "R6",
+          "R7",
+          "R8",
+          "R9",
+          "R10"
+        ]
+      }
+    },
+    {
+      "unique-id": "neo4j-graph",
+      "node-type": "database",
+      "name": "Neo4j Knowledge Graph",
+      "description": "[[ DESCRIPTION ]]",
+      "details": {
+        "type": "graph",
+        "protocol": "bolt",
+        "default-uri": "bolt://localhost:7687"
+      }
+    },
+    {
+      "unique-id": "ollama-llm",
+      "node-type": "service",
+      "name": "Ollama LLM Stack",
+      "description": "[[ DESCRIPTION ]]",
+      "details": {
+        "models": [
+          "qwen2.5-coder:14b",
+          "nomic-embed-text"
+        ],
+        "data-boundary": "local — no data leaves org",
+        "protocol": "HTTP",
+        "default-host": "http://localhost:11434"
+      }
+    },
+    {
+      "unique-id": "qa-agent",
+      "node-type": "service",
+      "name": "NL→Cypher Q&A Agent",
+      "description": "[[ DESCRIPTION ]]",
+      "details": {
+        "path": "interaction/qa_agent.py",
+        "framework": "LangChain + langchain-ollama",
+        "pattern": "NL → Cypher → Neo4j → answer"
+      }
+    },
+    {
+      "unique-id": "api-server",
+      "node-type": "service",
+      "name": "FastAPI + SSE Server",
+      "description": "[[ DESCRIPTION ]]",
+      "details": {
+        "path": "interaction/server.py",
+        "framework": "FastAPI",
+        "streaming": "SSE (Server-Sent Events)",
+        "default-port": 8000
+      }
+    },
+    {
+      "unique-id": "web-ui",
+      "node-type": "webclient",
+      "name": "Chat Web UI",
+      "description": "[[ DESCRIPTION ]]",
+      "details": {
+        "path": "interaction/chat.html",
+        "technology": "Vanilla JS + SSE"
+      }
+    },
+    {
+      "unique-id": "claude-agent",
+      "node-type": "service",
+      "name": "Claude AI Agent (Cowork)",
+      "description": "[[ DESCRIPTION ]]",
+      "details": {
+        "config-file": "CLAUDE.md",
+        "skills-path": ".claude/skills/",
+        "role": "ontology authoring assistant, code generation, architecture Q&A"
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "unique-id": "modules-to-loader",
+      "description": "[[ DESCRIPTION ]]",
+      "protocol": "Python import",
+      "relationship-type": {
+        "connects": {
+          "source": {
+            "node": "ontology-modules"
+          },
+          "destination": {
+            "node": "ontology-loader"
+          }
+        }
+      }
+    },
+    {
+      "unique-id": "instances-to-loader",
+      "description": "[[ DESCRIPTION ]]",
+      "protocol": "YAML read",
+      "relationship-type": {
+        "connects": {
+          "source": {
+            "node": "instance-data"
+          },
+          "destination": {
+            "node": "ontology-loader"
+          }
+        }
+      }
+    },
+    {
+      "unique-id": "loader-to-neo4j",
+      "description": "[[ DESCRIPTION ]]",
+      "protocol": "Bolt (neo4j Python driver)",
+      "relationship-type": {
+        "connects": {
+          "source": {
+            "node": "ontology-loader"
+          },
+          "destination": {
+            "node": "neo4j-graph"
+          }
+        }
+      }
+    },
+    {
+      "unique-id": "qa-agent-to-neo4j",
+      "description": "[[ DESCRIPTION ]]",
+      "protocol": "Bolt (Cypher queries)",
+      "relationship-type": {
+        "connects": {
+          "source": {
+            "node": "qa-agent"
+          },
+          "destination": {
+            "node": "neo4j-graph"
+          }
+        }
+      }
+    },
+    {
+      "unique-id": "qa-agent-to-ollama",
+      "description": "[[ DESCRIPTION ]]",
+      "protocol": "HTTP (LangChain)",
+      "relationship-type": {
+        "connects": {
+          "source": {
+            "node": "qa-agent"
+          },
+          "destination": {
+            "node": "ollama-llm"
+          }
+        }
+      }
+    },
+    {
+      "unique-id": "server-to-qa-agent",
+      "description": "[[ DESCRIPTION ]]",
+      "protocol": "Python function call",
+      "relationship-type": {
+        "connects": {
+          "source": {
+            "node": "api-server"
+          },
+          "destination": {
+            "node": "qa-agent"
+          }
+        }
+      }
+    },
+    {
+      "unique-id": "webui-to-server",
+      "description": "[[ DESCRIPTION ]]",
+      "protocol": "HTTPS + SSE",
+      "relationship-type": {
+        "connects": {
+          "source": {
+            "node": "web-ui"
+          },
+          "destination": {
+            "node": "api-server"
+          }
+        }
+      }
+    }
+  ],
+  "$schema": "https://example.com/patterns/ea-knowledge-graph-pattern.json"
+}

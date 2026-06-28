@@ -1,0 +1,328 @@
+{
+  "$schema": "https://calm.finos.org/release/1.2/meta/calm.json",
+  "$id": "https://example.com/patterns/ea-knowledge-graph-pattern.json",
+  "title": "Enterprise Architecture Knowledge Graph Pattern",
+  "description": "Reusable architecture pattern for the EA Knowledge Graph system: 5-module ontology pipeline, Neo4j graph store, Ollama LLM stack, FastAPI Q&A server, and web chat UI.",
+  "type": "object",
+  "properties": {
+
+    "nodes": {
+      "type": "array",
+      "minItems": 9,
+      "maxItems": 9,
+      "prefixItems": [
+
+        {
+          "type": "object",
+          "properties": {
+            "unique-id":   { "const": "ontology-modules" },
+            "node-type":   { "const": "service" },
+            "name":        { "const": "Ontology Modules" },
+            "description": { "type": "string" },
+            "details": {
+              "type": "object",
+              "properties": {
+                "modules": {
+                  "const": ["org", "sys", "art", "dec", "gov"]
+                },
+                "format":  { "const": "YAML + owlready2 Python" },
+                "path":    { "const": "ontology/modules/" }
+              }
+            }
+          },
+          "required": ["description"]
+        },
+
+        {
+          "type": "object",
+          "properties": {
+            "unique-id":   { "const": "instance-data" },
+            "node-type":   { "const": "datastore" },
+            "name":        { "const": "Instance Data (ABox)" },
+            "description": { "type": "string" },
+            "details": {
+              "type": "object",
+              "properties": {
+                "format": { "const": "YAML" },
+                "path":   { "const": "ontology/instances/" }
+              }
+            }
+          },
+          "required": ["description"]
+        },
+
+        {
+          "type": "object",
+          "properties": {
+            "unique-id":   { "const": "ontology-loader" },
+            "node-type":   { "const": "service" },
+            "name":        { "const": "Ontology Loader" },
+            "description": { "type": "string" },
+            "details": {
+              "type": "object",
+              "properties": {
+                "path":     { "const": "ingestion/load_ontology.py" },
+                "language": { "const": "Python 3.12" },
+                "runs-validation-rules": { "const": ["R1","R2","R3","R4","R5","R6","R7","R8","R9","R10"] }
+              }
+            }
+          },
+          "required": ["description"]
+        },
+
+        {
+          "type": "object",
+          "properties": {
+            "unique-id":   { "const": "neo4j-graph" },
+            "node-type":   { "const": "database" },
+            "name":        { "const": "Neo4j Knowledge Graph" },
+            "description": { "type": "string" },
+            "details": {
+              "type": "object",
+              "properties": {
+                "type":     { "const": "graph" },
+                "protocol": { "const": "bolt" },
+                "default-uri": { "const": "bolt://localhost:7687" }
+              }
+            }
+          },
+          "required": ["description"]
+        },
+
+        {
+          "type": "object",
+          "properties": {
+            "unique-id":   { "const": "ollama-llm" },
+            "node-type":   { "const": "service" },
+            "name":        { "const": "Ollama LLM Stack" },
+            "description": { "type": "string" },
+            "details": {
+              "type": "object",
+              "properties": {
+                "models":          { "const": ["qwen2.5-coder:14b", "nomic-embed-text"] },
+                "data-boundary":   { "const": "local — no data leaves org" },
+                "protocol":        { "const": "HTTP" },
+                "default-host":    { "const": "http://localhost:11434" }
+              }
+            }
+          },
+          "required": ["description"]
+        },
+
+        {
+          "type": "object",
+          "properties": {
+            "unique-id":   { "const": "qa-agent" },
+            "node-type":   { "const": "service" },
+            "name":        { "const": "NL→Cypher Q&A Agent" },
+            "description": { "type": "string" },
+            "details": {
+              "type": "object",
+              "properties": {
+                "path":      { "const": "interaction/qa_agent.py" },
+                "framework": { "const": "LangChain + langchain-ollama" },
+                "pattern":   { "const": "NL → Cypher → Neo4j → answer" }
+              }
+            }
+          },
+          "required": ["description"]
+        },
+
+        {
+          "type": "object",
+          "properties": {
+            "unique-id":   { "const": "api-server" },
+            "node-type":   { "const": "service" },
+            "name":        { "const": "FastAPI + SSE Server" },
+            "description": { "type": "string" },
+            "details": {
+              "type": "object",
+              "properties": {
+                "path":      { "const": "interaction/server.py" },
+                "framework": { "const": "FastAPI" },
+                "streaming": { "const": "SSE (Server-Sent Events)" },
+                "default-port": { "const": 8000 }
+              }
+            }
+          },
+          "required": ["description"]
+        },
+
+        {
+          "type": "object",
+          "properties": {
+            "unique-id":   { "const": "web-ui" },
+            "node-type":   { "const": "webclient" },
+            "name":        { "const": "Chat Web UI" },
+            "description": { "type": "string" },
+            "details": {
+              "type": "object",
+              "properties": {
+                "path":       { "const": "interaction/chat.html" },
+                "technology": { "const": "Vanilla JS + SSE" }
+              }
+            }
+          },
+          "required": ["description"]
+        },
+
+        {
+          "type": "object",
+          "properties": {
+            "unique-id":   { "const": "claude-agent" },
+            "node-type":   { "const": "service" },
+            "name":        { "const": "Claude AI Agent (Cowork)" },
+            "description": { "type": "string" },
+            "details": {
+              "type": "object",
+              "properties": {
+                "config-file": { "const": "CLAUDE.md" },
+                "skills-path": { "const": ".claude/skills/" },
+                "role":        { "const": "ontology authoring assistant, code generation, architecture Q&A" }
+              }
+            }
+          },
+          "required": ["description"]
+        }
+
+      ]
+    },
+
+    "relationships": {
+      "type": "array",
+      "minItems": 7,
+      "maxItems": 7,
+      "prefixItems": [
+
+        {
+          "type": "object",
+          "properties": {
+            "unique-id":   { "const": "modules-to-loader" },
+            "description": { "type": "string" },
+            "protocol":    { "const": "Python import" },
+            "relationship-type": {
+              "const": {
+                "connects": {
+                  "source":      { "node": "ontology-modules" },
+                  "destination": { "node": "ontology-loader" }
+                }
+              }
+            }
+          },
+          "required": ["description"]
+        },
+
+        {
+          "type": "object",
+          "properties": {
+            "unique-id":   { "const": "instances-to-loader" },
+            "description": { "type": "string" },
+            "protocol":    { "const": "YAML read" },
+            "relationship-type": {
+              "const": {
+                "connects": {
+                  "source":      { "node": "instance-data" },
+                  "destination": { "node": "ontology-loader" }
+                }
+              }
+            }
+          },
+          "required": ["description"]
+        },
+
+        {
+          "type": "object",
+          "properties": {
+            "unique-id":   { "const": "loader-to-neo4j" },
+            "description": { "type": "string" },
+            "protocol":    { "const": "Bolt (neo4j Python driver)" },
+            "relationship-type": {
+              "const": {
+                "connects": {
+                  "source":      { "node": "ontology-loader" },
+                  "destination": { "node": "neo4j-graph" }
+                }
+              }
+            }
+          },
+          "required": ["description"]
+        },
+
+        {
+          "type": "object",
+          "properties": {
+            "unique-id":   { "const": "qa-agent-to-neo4j" },
+            "description": { "type": "string" },
+            "protocol":    { "const": "Bolt (Cypher queries)" },
+            "relationship-type": {
+              "const": {
+                "connects": {
+                  "source":      { "node": "qa-agent" },
+                  "destination": { "node": "neo4j-graph" }
+                }
+              }
+            }
+          },
+          "required": ["description"]
+        },
+
+        {
+          "type": "object",
+          "properties": {
+            "unique-id":   { "const": "qa-agent-to-ollama" },
+            "description": { "type": "string" },
+            "protocol":    { "const": "HTTP (LangChain)" },
+            "relationship-type": {
+              "const": {
+                "connects": {
+                  "source":      { "node": "qa-agent" },
+                  "destination": { "node": "ollama-llm" }
+                }
+              }
+            }
+          },
+          "required": ["description"]
+        },
+
+        {
+          "type": "object",
+          "properties": {
+            "unique-id":   { "const": "server-to-qa-agent" },
+            "description": { "type": "string" },
+            "protocol":    { "const": "Python function call" },
+            "relationship-type": {
+              "const": {
+                "connects": {
+                  "source":      { "node": "api-server" },
+                  "destination": { "node": "qa-agent" }
+                }
+              }
+            }
+          },
+          "required": ["description"]
+        },
+
+        {
+          "type": "object",
+          "properties": {
+            "unique-id":   { "const": "webui-to-server" },
+            "description": { "type": "string" },
+            "protocol":    { "const": "HTTPS + SSE" },
+            "relationship-type": {
+              "const": {
+                "connects": {
+                  "source":      { "node": "web-ui" },
+                  "destination": { "node": "api-server" }
+                }
+              }
+            }
+          },
+          "required": ["description"]
+        }
+
+      ]
+    }
+
+  },
+  "required": ["nodes", "relationships"]
+}
